@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  Text, Switch, Button, Box,
+  Text, Switch, Button, Box, Divider, Link,
 } from '@chakra-ui/react';
 import { invoke } from '@tauri-apps/api';
 import { store, updateShortcut } from '../../../../utils/utils';
@@ -93,6 +93,44 @@ const Settings = () => {
           isChecked={launchOnLogin}
           onChange={handleLaunchOnLoginChange}
         />
+      </Box>
+
+      <Divider
+        mt="10"
+        mb="4"
+        borderColor="rgba(255, 255, 255, 0.1)"
+      />
+
+      <Box>
+        <Text fontWeight="bold" mb="2">Agradecimientos</Text>
+        <Text color="rgba(255, 255, 255, 0.7)" fontSize="13px" mb="2">
+          PromptClip fue construido usando las siguientes tecnologías y librerías:
+        </Text>
+        <Text color="rgba(255, 255, 255, 0.7)" fontSize="13px">
+          •{' '}
+          <Link href="https://tauri.app/" isExternal color="#A0AEC0">
+            Tauri
+          </Link>
+        </Text>
+        <Text color="rgba(255, 255, 255, 0.7)" fontSize="13px">
+          •{' '}
+          <Link href="https://reactjs.org/" isExternal color="#A0AEC0">
+            React
+          </Link>
+        </Text>
+        <Text color="rgba(255, 255, 255, 0.7)" fontSize="13px">
+          •{' '}
+          <Link href="https://chakra-ui.com/" isExternal color="#A0AEC0">
+            Chakra UI
+          </Link>
+        </Text>
+        <Text color="rgba(255, 255, 255, 0.5)" fontSize="12px" mt="4">
+          Mantenimiento y mejoras por{' '}
+          <Link href="https://herduin.com" isExternal color="#A0AEC0" fontWeight="bold">
+            Herduin Rivera
+          </Link>
+          .
+        </Text>
       </Box>
     </div>
   );
