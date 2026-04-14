@@ -4,6 +4,7 @@ import {
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import CustomInput from '../../../../components/CustomInput/CustomInput.component';
 import { storePrompt, getCategories } from '../../../../utils/database';
 import CustomButton from '../../../../components/CustomButton/CustomButton.component';
@@ -14,6 +15,7 @@ import { routes } from '../routes';
 const NEW_CATEGORY_SENTINEL = '__new_category__';
 
 function AddPrompt() {
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
   const [categories, setCategories] = useState<ICategory[]>([]);
@@ -33,8 +35,8 @@ function AddPrompt() {
   const handleAddPrompt = async () => {
     if (!title.trim() || !text.trim()) {
       toast({
-        title: 'Error',
-        description: 'Please enter a valid title and text.',
+        title: t('common.error'),
+        description: t('prompts.validationRequired'),
         status: 'error',
         duration: 4000,
         isClosable: true,
@@ -44,8 +46,8 @@ function AddPrompt() {
 
     await storePrompt(title, text, selectedCategory || null);
     toast({
-      title: 'Prompt added.',
-      description: "We've added your prompt for you.",
+      title: t('prompts.addedTitle'),
+      description: t('prompts.addedDesc'),
       status: 'success',
       duration: 4000,
       isClosable: true,
@@ -60,13 +62,13 @@ function AddPrompt() {
     <Box borderRadius="md" overflowY="auto" maxHeight="calc(100vh - 127px)">
       <VStack spacing={4} align="start">
         <FormControl>
-          <Text fontWeight="bold">New Prompt</Text>
+          <Text fontWeight="bold">{t('prompts.newPromptTitle')}</Text>
         </FormControl>
 
         <FormControl>
-          <FormLabel>Prompt title</FormLabel>
+          <FormLabel>{t('prompts.titleLabel')}</FormLabel>
           <CustomInput
-            placeholder="Write your prompt title"
+            placeholder={t('prompts.titlePlaceholder')}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             autoFocus
@@ -74,9 +76,9 @@ function AddPrompt() {
         </FormControl>
 
         <FormControl>
-          <FormLabel>Prompt text</FormLabel>
+          <FormLabel>{t('prompts.textLabel')}</FormLabel>
           <CustomInput
-            placeholder="Enter your prompt text"
+            placeholder={t('prompts.textPlaceholder')}
             value={text}
             onChange={(e) => setText(e.target.value)}
             multiline
@@ -84,9 +86,9 @@ function AddPrompt() {
         </FormControl>
 
         <FormControl>
-          <FormLabel>Category</FormLabel>
+          <FormLabel>{t('prompts.categoryLabel')}</FormLabel>
           <Select
-            placeholder="Select a category"
+            placeholder={t('prompts.selectCategory')}
             color="#667085"
             value={selectedCategory}
             onChange={(e) => {
@@ -107,12 +109,12 @@ function AddPrompt() {
                 {category.name}
               </option>
             ))}
-            <option value={NEW_CATEGORY_SENTINEL}>+ Create new category…</option>
+            <option value={NEW_CATEGORY_SENTINEL}>{t('prompts.createNewCategory')}</option>
           </Select>
         </FormControl>
 
         <CustomButton icon={<AddIcon />} onClick={handleAddPrompt}>
-          Add Prompt
+          {t('prompts.addButton')}
         </CustomButton>
       </VStack>
     </Box>

@@ -10,6 +10,7 @@ import {
   Select,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
+import { useTranslation } from 'react-i18next';
 import CustomInput from '../../../../components/CustomInput/CustomInput.component';
 import { updatePrompt, getCategories, getPromptByUUID } from '../../../../utils/database';
 import CustomButton from '../../../../components/CustomButton/CustomButton.component';
@@ -20,6 +21,7 @@ import { routes } from '../routes';
 const NEW_CATEGORY_SENTINEL = '__new_category__';
 
 function EditPrompt() {
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
   const [categories, setCategories] = useState<ICategory[]>([]);
@@ -53,8 +55,8 @@ function EditPrompt() {
   const handleEditPrompt = async () => {
     if (title === '' || text === '') {
       toast({
-        title: 'Error',
-        description: 'Please enter a title and text.',
+        title: t('common.error'),
+        description: t('prompts.validationRequiredShort'),
         status: 'error',
         duration: 4000,
         isClosable: true,
@@ -75,8 +77,8 @@ function EditPrompt() {
 
     await updatePrompt(updatedPrompt);
     toast({
-      title: 'Prompt updated.',
-      description: 'Edited the prompt.',
+      title: t('prompts.updatedTitle'),
+      description: t('prompts.updatedDesc'),
       status: 'success',
       duration: 4000,
       isClosable: true,
@@ -88,22 +90,22 @@ function EditPrompt() {
     <Box borderRadius="md">
       <VStack spacing={4} align="start">
         <FormControl>
-          <Text fontWeight="bold">Edit Prompt</Text>
+          <Text fontWeight="bold">{t('prompts.editPromptTitle')}</Text>
         </FormControl>
 
         <FormControl>
-          <FormLabel>Prompt title</FormLabel>
+          <FormLabel>{t('prompts.titleLabel')}</FormLabel>
           <CustomInput
-            placeholder="Write your prompt title"
+            placeholder={t('prompts.titlePlaceholder')}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </FormControl>
 
         <FormControl>
-          <FormLabel>Prompt text</FormLabel>
+          <FormLabel>{t('prompts.textLabel')}</FormLabel>
           <CustomInput
-            placeholder="Enter your prompt text"
+            placeholder={t('prompts.textPlaceholder')}
             value={text}
             onChange={(e) => setText(e.target.value)}
             multiline
@@ -111,9 +113,9 @@ function EditPrompt() {
         </FormControl>
 
         <FormControl>
-          <FormLabel>Category</FormLabel>
+          <FormLabel>{t('prompts.categoryLabel')}</FormLabel>
           <Select
-            placeholder="Select a category"
+            placeholder={t('prompts.selectCategory')}
             color="#667085"
             value={selectedCategory}
             onChange={(e) => {
@@ -134,12 +136,12 @@ function EditPrompt() {
                 {category.name}
               </option>
             ))}
-            <option value={NEW_CATEGORY_SENTINEL}>+ Create new category…</option>
+            <option value={NEW_CATEGORY_SENTINEL}>{t('prompts.createNewCategory')}</option>
           </Select>
         </FormControl>
 
         <CustomButton icon={<AddIcon />} onClick={handleEditPrompt}>
-          Save Prompt
+          {t('prompts.saveButton')}
         </CustomButton>
       </VStack>
     </Box>

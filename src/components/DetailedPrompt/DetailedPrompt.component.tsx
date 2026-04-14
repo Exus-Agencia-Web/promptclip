@@ -4,6 +4,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { CopyIcon } from '@chakra-ui/icons';
+import { useTranslation } from 'react-i18next';
 import { IPrompt } from '../../types/Prompt.types';
 import { deletePrompt, toggleFavorite } from '../../utils/database';
 import { UpdateContext } from '../../contexts/update.context';
@@ -22,6 +23,7 @@ const DetailedPrompt: React.FC<IPrompt> = ({
   uuid,
   category_id,
 }) => {
+  const { t } = useTranslation();
   const { setUpdate } = useContext(UpdateContext);
   const { categories } = useContext(CategoriesContext);
   const toast = useToast();
@@ -48,7 +50,7 @@ const DetailedPrompt: React.FC<IPrompt> = ({
     event.stopPropagation();
     await navigator.clipboard.writeText(prompt);
     toast({
-      title: 'Prompt copied to clipboard',
+      title: t('prompts.copied'),
       status: 'success',
       duration: 3000,
       isClosable: true,

@@ -1,0 +1,92 @@
+{
+  "sidebar": {
+    "prompt": "Prompt",
+    "allPrompts": "Todos los prompts",
+    "favorites": "Favoritos",
+    "recentUsed": "Usados recientes",
+    "mostUsed": "Más usados",
+    "categories": "Categorías",
+    "settings": "Ajustes"
+  },
+  "dashboard": {
+    "welcomeBack": "Bienvenido de nuevo",
+    "manageAll": "Gestiona todos tus prompts de IA en un solo lugar",
+    "newPrompt": "Nuevo prompt"
+  },
+  "common": {
+    "error": "Error",
+    "refresh": "Refrescar",
+    "search": "Buscar",
+    "later": "Después"
+  },
+  "prompts": {
+    "newPromptTitle": "Nuevo prompt",
+    "editPromptTitle": "Editar prompt",
+    "titleLabel": "Título del prompt",
+    "titlePlaceholder": "Escribe el título del prompt",
+    "textLabel": "Texto del prompt",
+    "textPlaceholder": "Escribe el texto del prompt",
+    "categoryLabel": "Categoría",
+    "selectCategory": "Selecciona una categoría",
+    "createNewCategory": "+ Crear nueva categoría…",
+    "addButton": "Añadir prompt",
+    "saveButton": "Guardar prompt",
+    "copied": "Prompt copiado al portapapeles",
+    "addedTitle": "Prompt añadido.",
+    "addedDesc": "Hemos añadido tu prompt.",
+    "updatedTitle": "Prompt actualizado.",
+    "updatedDesc": "Prompt editado correctamente.",
+    "validationRequired": "Introduce un título y un texto válidos.",
+    "validationRequiredShort": "Introduce un título y un texto."
+  },
+  "categories": {
+    "addTitle": "Añadir nueva categoría",
+    "editTitle": "Editar categoría",
+    "nameLabel": "Nombre de la categoría",
+    "namePlaceholder": "Introduce el nombre de la categoría",
+    "addButton": "Añadir categoría",
+    "saveButton": "Guardar cambios",
+    "deleteButton": "Eliminar categoría",
+    "deleteConfirm": "¿Eliminar esta categoría? Los prompts que contiene se conservarán sin categoría.",
+    "deletedTitle": "Categoría eliminada.",
+    "addedTitle": "Categoría añadida.",
+    "addedDesc": "Hemos añadido la categoría.",
+    "updatedTitle": "Categoría actualizada.",
+    "updatedDesc": "Hemos actualizado la categoría.",
+    "enterName": "Introduce un nombre para la categoría.",
+    "tooLong": "El nombre debe tener máximo 60 caracteres.",
+    "failedCreate": "No se pudo crear la categoría.",
+    "failedUpdate": "No se pudo actualizar la categoría.",
+    "failedDelete": "No se pudo eliminar la categoría.",
+    "failedFetch": "No se pudo cargar la categoría.",
+    "notFound": "Categoría no encontrada",
+    "notFoundDesc": "Es posible que haya sido eliminada.",
+    "editLink": "Editar categoría"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "changeShortcut": "Cambiar atajo:",
+    "listening": "Escuchando...",
+    "pressKey": "Pulsa una tecla...",
+    "launchOnLogin": "Iniciar al arrancar sesión:",
+    "language": "Idioma:",
+    "languageEnglish": "Inglés",
+    "languageSpanish": "Español",
+    "updatesTitle": "Actualizaciones",
+    "checking": "Buscando actualizaciones…",
+    "checkFailed": "No se pudo verificar actualizaciones",
+    "upToDate": "Estás usando la última versión ({{version}}).",
+    "updateAvailable": "Nueva versión disponible: {{latest}} (tienes {{current}}).",
+    "downloadUpdate": "Descargar actualización",
+    "checkAgain": "Volver a comprobar",
+    "acknowledgements": "Agradecimientos",
+    "builtWith": "PromptClip fue construido usando las siguientes tecnologías y librerías:",
+    "maintainedBy": "Mantenimiento y mejoras por"
+  },
+  "updateToast": {
+    "title": "Nueva versión {{latest}} disponible",
+    "description": "Tienes la {{current}}. Descarga el DMG desde GitHub.",
+    "download": "Descargar",
+    "later": "Después"
+  }
+}

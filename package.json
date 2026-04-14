@@ -1,7 +1,7 @@
 {
   "name": "promptclip",
   "private": true,
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -18,8 +18,10 @@
     "@emotion/styled": "^11.11.0",
     "@tauri-apps/api": "^1.4.0",
     "framer-motion": "^10.12.17",
+    "i18next": "^23.16.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^13.5.0",
     "react-router-dom": "6",
     "tauri-plugin-sql-api": "github:tauri-apps/tauri-plugin-sql#v1",
     "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#v1",

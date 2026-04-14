@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 import { listen } from '@tauri-apps/api/event';
 import { open as openExternal } from '@tauri-apps/api/shell';
+import { useTranslation } from 'react-i18next';
 import TitleBar from '../../components/TitleBar/TitleBar.component';
 import { Logo } from '../../components/Icons/PromptClipLogo';
 import SideBarButton from '../../components/SideBarButtons/SideBarButton.component';
@@ -32,6 +33,7 @@ import Settings from './routes/Settings/Settings.route';
 import EditCategory from './routes/EditCategory/EditCategory.route';
 
 function Dashboard() {
+  const { t } = useTranslation();
   const { prompts, setPrompts } = useContext(PromptsContext);
   const { shouldUpdate } = useContext(UpdateContext);
   const { categories, setCategories } = useContext(CategoriesContext);
@@ -67,10 +69,10 @@ function Dashboard() {
             borderColor="rgba(255, 255, 255, 0.1)"
           >
             <Text fontWeight="bold" color="white" mb="1">
-              Nueva versión {latestVersion} disponible
+              {t('updateToast.title', { latest: latestVersion })}
             </Text>
             <Text color="rgba(255, 255, 255, 0.7)" fontSize="12px" mb="3">
-              Tienes la {currentVersion}. Descarga el DMG desde GitHub.
+              {t('updateToast.description', { current: currentVersion })}
             </Text>
             <Box display="flex" gap="8px">
               <Button
@@ -84,17 +86,17 @@ function Dashboard() {
                   onClose();
                 }}
               >
-                Descargar
+                {t('updateToast.download')}
               </Button>
               <Button size="sm" variant="ghost" color="white" onClick={onClose}>
-                Después
+                {t('updateToast.later')}
               </Button>
             </Box>
           </Box>
         ),
       });
     }
-  }, [appUpdateStatus, toast]);
+  }, [appUpdateStatus, toast, t]);
 
   const location = useLocation();
   const nav = useNavigate();
@@ -121,7 +123,7 @@ function Dashboard() {
         <TitleBar />
         <Logo className="logo" />
         <div className="sidebarOptionsHeader">
-          <Text color="#787C83">Prompt</Text>
+          <Text color="#787C83">{t('sidebar.prompt')}</Text>
           <CustomIconButton
             iconText="+"
             size="xs"
@@ -135,29 +137,29 @@ function Dashboard() {
             icon={<EditIcon />}
             to={routes.allPrompts}
             active={location.pathname === routes.allPrompts}
-            text="All Prompts"
+            text={t('sidebar.allPrompts')}
           />
           <SideBarButton
             icon={<HeartIcon />}
             to={routes.favorites}
             active={location.pathname === routes.favorites}
-            text="Favorites"
+            text={t('sidebar.favorites')}
           />
           <SideBarButton
             icon={<RepeatClockIcon />}
             to={routes.recentUsed}
             active={location.pathname === routes.recentUsed}
-            text="Recent used"
+            text={t('sidebar.recentUsed')}
           />
           <SideBarButton
             icon={<StarIcon />}
             to={routes.mostUsed}
             active={location.pathname === routes.mostUsed}
-            text="Most used"
+            text={t('sidebar.mostUsed')}
           />
         </div>
         <div className="sidebarOptionsHeader">
-          <Text color="#787C83">Categories</Text>
+          <Text color="#787C83">{t('sidebar.categories')}</Text>
           <CustomIconButton
             iconText="+"
             size="xs"
@@ -203,7 +205,7 @@ function Dashboard() {
                 marginTop: '2px',
               }}
             />
-            <Text color="#787C83">Settings</Text>
+            <Text color="#787C83">{t('sidebar.settings')}</Text>
           </div>
         </div>
       </div>
@@ -218,10 +220,10 @@ function Dashboard() {
         <div data-tauri-drag-region className="topStatusBar">
           <div>
             <Text fontWeight="bold" fontSize="14px">
-              Welcome back
+              {t('dashboard.welcomeBack')}
             </Text>
             <Text color="rgba(255,255,255, 0.7)" fontSize="11px">
-              Manage all your AI prompts in one place
+              {t('dashboard.manageAll')}
             </Text>
           </div>
           <div
@@ -232,7 +234,7 @@ function Dashboard() {
             }}
           >
             <CustomButton leftIcon={<AddIcon />} onClick={handleAddPromptClick}>
-              New Prompt
+              {t('dashboard.newPrompt')}
             </CustomButton>
           </div>
         </div>

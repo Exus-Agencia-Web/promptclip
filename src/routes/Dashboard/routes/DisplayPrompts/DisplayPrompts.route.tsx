@@ -1,6 +1,7 @@
 import { Text } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import DetailedPrompt from '../../../../components/DetailedPrompt/DetailedPrompt.component';
 import CustomInput from '../../../../components/CustomInput/CustomInput.component';
 import { IPrompt, ICategory } from '../../../../types/Prompt.types';
@@ -23,6 +24,7 @@ interface DisplayPromptsProps {
 }
 
 const DisplayPrompts = ({ prompts, filterOption }: DisplayPromptsProps) => {
+  const { t } = useTranslation();
   const [sortedPrompts, setSortedPrompts] = useState(prompts);
   const { setUpdate } = useContext(UpdateContext);
   const { categories } = useContext(CategoriesContext);
@@ -69,25 +71,25 @@ const DisplayPrompts = ({ prompts, filterOption }: DisplayPromptsProps) => {
   if (categoryUuidFromUrl && categories.length > 0 && !categoryFromUrl) {
     return (
       <div>
-        <Text fontWeight="bold">Category not found</Text>
+        <Text fontWeight="bold">{t('categories.notFound')}</Text>
         <Text color="grey" marginTop="8px">
-          This category may have been deleted.
+          {t('categories.notFoundDesc')}
         </Text>
       </div>
     );
   }
 
   const getFilterOptionLabel = (): string => {
-    if (activeFilter === 'DateCreated') {
-      return 'All Prompts';
+    if (activeFilter === 'DateCreated' || activeFilter === 'AllPrompts') {
+      return t('sidebar.allPrompts');
     }
-    if (typeof activeFilter === 'string') {
-      return activeFilter;
-    }
+    if (activeFilter === 'Favorites') return t('sidebar.favorites');
+    if (activeFilter === 'MostUsed') return t('sidebar.mostUsed');
+    if (activeFilter === 'RecentlyUsed') return t('sidebar.recentUsed');
     if (activeFilter && typeof activeFilter === 'object' && activeFilter.name) {
       return activeFilter.name;
     }
-    return 'All Prompts';
+    return t('sidebar.allPrompts');
   };
 
   const editableCategory: ICategory | null =
@@ -110,7 +112,7 @@ const DisplayPrompts = ({ prompts, filterOption }: DisplayPromptsProps) => {
               setUpdate();
             }}
           >
-            Refresh
+            {t('common.refresh')}
           </Text>
           {editableCategory && (
             <Text
@@ -120,13 +122,13 @@ const DisplayPrompts = ({ prompts, filterOption }: DisplayPromptsProps) => {
                 nav(`${routes.editCategory}/${editableCategory.uuid}`);
               }}
             >
-              Edit Category
+              {t('categories.editLink')}
             </Text>
           )}
         </div>
       </div>
       <CustomInput
-        placeholder="Search"
+        placeholder={t('common.search')}
         marginTop="16px"
         onChange={(e) => {
           const searchResults = filterPrompts(prompts, e.target.value);

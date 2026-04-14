@@ -4,6 +4,7 @@ import {
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import CustomInput from '../../../../components/CustomInput/CustomInput.component';
 import {
   updateCategory,
@@ -16,6 +17,7 @@ import { TrashIcon } from '../../../../components/Icons/TrashIcon';
 import { routes } from '../routes';
 
 function EditCategory() {
+  const { t } = useTranslation();
   const { uuid } = useParams();
   if (!uuid) {
     return null;
@@ -34,8 +36,8 @@ function EditCategory() {
         }
       } catch (err) {
         toast({
-          title: 'Error',
-          description: 'Failed to fetch the category.',
+          title: t('common.error'),
+          description: t('categories.failedFetch'),
           status: 'error',
           duration: 4000,
           isClosable: true,
@@ -51,8 +53,8 @@ function EditCategory() {
 
     if (trimmed.length === 0) {
       toast({
-        title: 'Error',
-        description: 'Please enter a category name.',
+        title: t('common.error'),
+        description: t('categories.enterName'),
         status: 'error',
         duration: 4000,
         isClosable: true,
@@ -62,8 +64,8 @@ function EditCategory() {
 
     if (trimmed.length > 60) {
       toast({
-        title: 'Error',
-        description: 'Category name must be 60 characters or fewer.',
+        title: t('common.error'),
+        description: t('categories.tooLong'),
         status: 'error',
         duration: 4000,
         isClosable: true,
@@ -77,8 +79,8 @@ function EditCategory() {
       // eslint-disable-next-line no-console
       console.error('updateCategory failed', err);
       toast({
-        title: 'Error',
-        description: err instanceof Error ? err.message : 'Failed to update the category.',
+        title: t('common.error'),
+        description: err instanceof Error ? err.message : t('categories.failedUpdate'),
         status: 'error',
         duration: 4000,
         isClosable: true,
@@ -87,8 +89,8 @@ function EditCategory() {
     }
 
     toast({
-      title: 'Category updated.',
-      description: "We've updated the category for you.",
+      title: t('categories.updatedTitle'),
+      description: t('categories.updatedDesc'),
       status: 'success',
       duration: 4000,
       isClosable: true,
@@ -97,9 +99,7 @@ function EditCategory() {
   };
 
   const handleDeleteCategory = async () => {
-    const confirmed = window.confirm(
-      'Delete this category? Prompts inside will be kept but unassigned.',
-    );
+    const confirmed = window.confirm(t('categories.deleteConfirm'));
     if (!confirmed) return;
 
     try {
@@ -108,8 +108,8 @@ function EditCategory() {
       // eslint-disable-next-line no-console
       console.error('deleteCategory failed', err);
       toast({
-        title: 'Error',
-        description: err instanceof Error ? err.message : 'Failed to delete the category.',
+        title: t('common.error'),
+        description: err instanceof Error ? err.message : t('categories.failedDelete'),
         status: 'error',
         duration: 4000,
         isClosable: true,
@@ -118,7 +118,7 @@ function EditCategory() {
     }
 
     toast({
-      title: 'Category deleted.',
+      title: t('categories.deletedTitle'),
       status: 'success',
       duration: 4000,
       isClosable: true,
@@ -131,13 +131,13 @@ function EditCategory() {
     <Box borderRadius="md">
       <VStack spacing={4} align="start">
         <FormControl>
-          <Text fontWeight="bold">Edit Category</Text>
+          <Text fontWeight="bold">{t('categories.editTitle')}</Text>
         </FormControl>
 
         <FormControl>
-          <FormLabel>Category name</FormLabel>
+          <FormLabel>{t('categories.nameLabel')}</FormLabel>
           <CustomInput
-            placeholder="Enter the category name"
+            placeholder={t('categories.namePlaceholder')}
             value={newCategoryName}
             onChange={(e) => setNewCategoryName(e.target.value)}
             autoFocus
@@ -146,10 +146,10 @@ function EditCategory() {
 
         <HStack spacing={3}>
           <CustomButton icon={<CheckIcon />} onClick={handleEditCategory}>
-            Save Changes
+            {t('categories.saveButton')}
           </CustomButton>
           <CustomButton icon={<TrashIcon />} onClick={handleDeleteCategory}>
-            Delete Category
+            {t('categories.deleteButton')}
           </CustomButton>
         </HStack>
       </VStack>

@@ -4,6 +4,7 @@ import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './styles.css';
+import './i18n';
 import { PromptsProvider } from './contexts/prompts.context';
 import { CategoriesProvider } from './contexts/categories.context';
 import { UpdateProvider } from './contexts/update.context';

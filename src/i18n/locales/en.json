@@ -1,0 +1,92 @@
+{
+  "sidebar": {
+    "prompt": "Prompt",
+    "allPrompts": "All Prompts",
+    "favorites": "Favorites",
+    "recentUsed": "Recent used",
+    "mostUsed": "Most used",
+    "categories": "Categories",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "welcomeBack": "Welcome back",
+    "manageAll": "Manage all your AI prompts in one place",
+    "newPrompt": "New Prompt"
+  },
+  "common": {
+    "error": "Error",
+    "refresh": "Refresh",
+    "search": "Search",
+    "later": "Later"
+  },
+  "prompts": {
+    "newPromptTitle": "New Prompt",
+    "editPromptTitle": "Edit Prompt",
+    "titleLabel": "Prompt title",
+    "titlePlaceholder": "Write your prompt title",
+    "textLabel": "Prompt text",
+    "textPlaceholder": "Enter your prompt text",
+    "categoryLabel": "Category",
+    "selectCategory": "Select a category",
+    "createNewCategory": "+ Create new category…",
+    "addButton": "Add Prompt",
+    "saveButton": "Save Prompt",
+    "copied": "Prompt copied to clipboard",
+    "addedTitle": "Prompt added.",
+    "addedDesc": "We've added your prompt for you.",
+    "updatedTitle": "Prompt updated.",
+    "updatedDesc": "Edited the prompt.",
+    "validationRequired": "Please enter a valid title and text.",
+    "validationRequiredShort": "Please enter a title and text."
+  },
+  "categories": {
+    "addTitle": "Add New Category",
+    "editTitle": "Edit Category",
+    "nameLabel": "Category name",
+    "namePlaceholder": "Enter the category name",
+    "addButton": "Add Category",
+    "saveButton": "Save Changes",
+    "deleteButton": "Delete Category",
+    "deleteConfirm": "Delete this category? Prompts inside will be kept but unassigned.",
+    "deletedTitle": "Category deleted.",
+    "addedTitle": "Category added.",
+    "addedDesc": "We've added the category for you.",
+    "updatedTitle": "Category updated.",
+    "updatedDesc": "We've updated the category for you.",
+    "enterName": "Please enter a category name.",
+    "tooLong": "Category name must be 60 characters or fewer.",
+    "failedCreate": "Failed to create category.",
+    "failedUpdate": "Failed to update the category.",
+    "failedDelete": "Failed to delete the category.",
+    "failedFetch": "Failed to fetch the category.",
+    "notFound": "Category not found",
+    "notFoundDesc": "This category may have been deleted.",
+    "editLink": "Edit Category"
+  },
+  "settings": {
+    "title": "Settings",
+    "changeShortcut": "Change Shortcut:",
+    "listening": "Listening...",
+    "pressKey": "Press a key...",
+    "launchOnLogin": "Launch on Login:",
+    "language": "Language:",
+    "languageEnglish": "English",
+    "languageSpanish": "Spanish",
+    "updatesTitle": "Updates",
+    "checking": "Checking for updates…",
+    "checkFailed": "Could not check for updates",
+    "upToDate": "You're on the latest version ({{version}}).",
+    "updateAvailable": "New version available: {{latest}} (you have {{current}}).",
+    "downloadUpdate": "Download update",
+    "checkAgain": "Check again",
+    "acknowledgements": "Acknowledgements",
+    "builtWith": "PromptClip was built using the following technologies and libraries:",
+    "maintainedBy": "Maintenance and improvements by"
+  },
+  "updateToast": {
+    "title": "New version {{latest}} available",
+    "description": "You have {{current}}. Download the DMG from GitHub.",
+    "download": "Download",
+    "later": "Later"
+  }
+}

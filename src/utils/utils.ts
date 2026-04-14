@@ -6,8 +6,18 @@ import { register, unregister } from '@tauri-apps/api/globalShortcut';
 import { createPromptsTable } from './database';
 import { createDashboardWindow, getDashboardWindow, getSearchWindow } from './window';
 import { IPrompt } from '../types/Prompt.types';
+import i18n, { SUPPORTED_LANGUAGES, SupportedLanguage } from '../i18n';
 
 export const store = new Store('.settings.dat');
+
+const loadLanguagePreference = async () => {
+  const saved = (await store.get('language')) as SupportedLanguage | null;
+  if (saved && SUPPORTED_LANGUAGES.includes(saved)) {
+    if (i18n.language !== saved) {
+      await i18n.changeLanguage(saved);
+    }
+  }
+};
 
 export const listenForHotkey = async (shortcut: string) => {
   const searchWindow = getSearchWindow()!;
@@ -40,6 +50,7 @@ export const updateShortcut = async (shortcut: string) => {
 export const initialiseApp = async () => {
   await createPromptsTable();
   await createSettings();
+  await loadLanguagePreference();
   await invoke('init_ns_panel', {
     appShortcut: await store.get('shortcut'),
   });
