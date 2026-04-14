@@ -37,6 +37,15 @@ fi
 
 echo "release: sign mode = $SIGN_MODE"
 
+# Detach any leftover DMG staging volume from a previous failed run.
+# bundle_dmg.sh leaves /Volumes/promptclip mounted when it fails mid-way,
+# which blocks the next build with "Resource busy".
+if mount | grep -q "/Volumes/promptclip"; then
+  echo "release: detaching stale /Volumes/promptclip"
+  hdiutil detach /Volumes/promptclip -force >/dev/null 2>&1 || true
+fi
+rm -f "$ROOT/src-tauri/target/release/bundle/macos/rw.promptclip_"*.dmg 2>/dev/null || true
+
 PREV=$(node -p "require('$PKG').version")
 
 # Bump patch in package.json (no git commit, no tag).
@@ -101,6 +110,35 @@ cp -f "$DMG_SRC" "$OUT"
 echo "release: wrote $OUT"
 
 # ---------------------------------------------------------------------------
+# Notarize and staple the DMG itself.
+#
+# Tauri 1.x only notarizes the inner .app, not the .dmg envelope. Without
+# stapling the DMG, Gatekeeper on the downloader's Mac will refuse to open
+# it the first time with "unnotarized Developer ID". We fix that here:
+# submit the DMG to Apple, wait for Accepted, then staple the ticket so
+# offline Gatekeeper checks succeed.
+# ---------------------------------------------------------------------------
+if [[ "$SIGN_MODE" == "signed+notarized" ]]; then
+  echo "release: notarizing DMG (can take 1-5 min)"
+  if [[ -n "${APPLE_API_KEY_PATH:-}" && -n "${APPLE_API_KEY:-}" && -n "${APPLE_API_ISSUER:-}" ]]; then
+    xcrun notarytool submit "$OUT" \
+      --key "$APPLE_API_KEY_PATH" \
+      --key-id "$APPLE_API_KEY" \
+      --issuer "$APPLE_API_ISSUER" \
+      --wait
+  else
+    xcrun notarytool submit "$OUT" \
+      --apple-id "$APPLE_ID" \
+      --password "$APPLE_PASSWORD" \
+      --team-id "$APPLE_TEAM_ID" \
+      --wait
+  fi
+
+  echo "release: stapling notarization ticket to DMG"
+  xcrun stapler staple "$OUT"
+fi
+
+# ---------------------------------------------------------------------------
 # Post-build verification. Only runs if signing was attempted.
 # ---------------------------------------------------------------------------
 if [[ "$SIGN_MODE" != "unsigned" ]]; then
@@ -119,16 +157,16 @@ if [[ "$SIGN_MODE" != "unsigned" ]]; then
   if spctl -a -t open --context context:primary-signature -v "$OUT" 2>&1; then
     echo "release: Gatekeeper accepts $OUT"
   else
-    echo "release: Gatekeeper rejected the DMG (may still be pending notarization)" >&2
+    echo "release: Gatekeeper rejected the DMG" >&2
+    exit 1
   fi
 
   if [[ "$SIGN_MODE" == "signed+notarized" ]]; then
-    echo "release: checking notarization staple on DMG"
-    if xcrun stapler validate "$OUT"; then
-      echo "release: notarization staple OK"
-    else
-      echo "release: no staple yet — Tauri may have submitted but not stapled; you can run 'xcrun stapler staple $OUT' after notarization completes" >&2
-    fi
+    echo "release: validating notarization staple on DMG"
+    xcrun stapler validate "$OUT" || {
+      echo "release: stapler validate FAILED" >&2
+      exit 1
+    }
   fi
 fi
 
