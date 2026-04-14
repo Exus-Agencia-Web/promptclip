@@ -7,6 +7,7 @@ import './styles.css';
 import { PromptsProvider } from './contexts/prompts.context';
 import { CategoriesProvider } from './contexts/categories.context';
 import { UpdateProvider } from './contexts/update.context';
+import { AppUpdateProvider } from './contexts/appUpdate.context';
 
 const theme = extendTheme({
   styles: {
@@ -25,7 +26,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <PromptsProvider>
           <CategoriesProvider>
             <UpdateProvider>
-              <App />
+              <AppUpdateProvider>
+                <App />
+              </AppUpdateProvider>
             </UpdateProvider>
           </CategoriesProvider>
         </PromptsProvider>

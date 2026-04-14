@@ -1,5 +1,7 @@
-import { useEffect, useContext } from 'react';
-import { Divider, Text } from '@chakra-ui/react';
+import { useEffect, useContext, useRef } from 'react';
+import {
+  Box, Button, Divider, Text, useToast,
+} from '@chakra-ui/react';
 import {
   AddIcon, EditIcon, RepeatClockIcon, StarIcon,
 } from '@chakra-ui/icons';
@@ -7,6 +9,7 @@ import {
   Routes, Route, useLocation, useNavigate,
 } from 'react-router-dom';
 import { listen } from '@tauri-apps/api/event';
+import { open as openExternal } from '@tauri-apps/api/shell';
 import TitleBar from '../../components/TitleBar/TitleBar.component';
 import { Logo } from '../../components/Icons/PromptClipLogo';
 import SideBarButton from '../../components/SideBarButtons/SideBarButton.component';
@@ -19,6 +22,7 @@ import { getCategories, getPrompts } from '../../utils/database';
 import { UpdateContext } from '../../contexts/update.context';
 import { PromptsContext } from '../../contexts/prompts.context';
 import { CategoriesContext } from '../../contexts/categories.context';
+import { AppUpdateContext } from '../../contexts/appUpdate.context';
 import CategoriesButton from '../../components/CategoriesButton/CategoriesButton.components';
 import CustomIconButton from '../../components/CustomIconButton/CustomIconButton.component';
 import { routes } from './routes/routes';
@@ -31,6 +35,9 @@ function Dashboard() {
   const { prompts, setPrompts } = useContext(PromptsContext);
   const { shouldUpdate } = useContext(UpdateContext);
   const { categories, setCategories } = useContext(CategoriesContext);
+  const { status: appUpdateStatus } = useContext(AppUpdateContext);
+  const toast = useToast();
+  const updateToastShownRef = useRef(false);
 
   useEffect(() => {
     (async () => {
@@ -38,6 +45,56 @@ function Dashboard() {
       setCategories(await getCategories());
     })();
   }, [shouldUpdate]);
+
+  useEffect(() => {
+    if (
+      !updateToastShownRef.current
+      && appUpdateStatus
+      && appUpdateStatus.updateAvailable
+    ) {
+      updateToastShownRef.current = true;
+      const { latestVersion, currentVersion, downloadUrl } = appUpdateStatus;
+      toast({
+        duration: 12000,
+        isClosable: true,
+        position: 'bottom-right',
+        render: ({ onClose }) => (
+          <Box
+            bg="var(--lighter-overlay-color)"
+            borderRadius="10px"
+            padding="16px"
+            borderWidth="1px"
+            borderColor="rgba(255, 255, 255, 0.1)"
+          >
+            <Text fontWeight="bold" color="white" mb="1">
+              Nueva versión {latestVersion} disponible
+            </Text>
+            <Text color="rgba(255, 255, 255, 0.7)" fontSize="12px" mb="3">
+              Tienes la {currentVersion}. Descarga el DMG desde GitHub.
+            </Text>
+            <Box display="flex" gap="8px">
+              <Button
+                size="sm"
+                colorScheme="green"
+                onClick={() => {
+                  openExternal(downloadUrl).catch((err) => {
+                    // eslint-disable-next-line no-console
+                    console.error('Failed to open download URL', err);
+                  });
+                  onClose();
+                }}
+              >
+                Descargar
+              </Button>
+              <Button size="sm" variant="ghost" color="white" onClick={onClose}>
+                Después
+              </Button>
+            </Box>
+          </Box>
+        ),
+      });
+    }
+  }, [appUpdateStatus, toast]);
 
   const location = useLocation();
   const nav = useNavigate();

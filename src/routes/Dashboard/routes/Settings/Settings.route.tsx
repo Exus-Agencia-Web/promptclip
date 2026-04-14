@@ -1,14 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {
   Text, Switch, Button, Box, Divider, Link,
 } from '@chakra-ui/react';
 import { invoke } from '@tauri-apps/api';
+import { open as openExternal } from '@tauri-apps/api/shell';
 import { store, updateShortcut } from '../../../../utils/utils';
+import { AppUpdateContext } from '../../../../contexts/appUpdate.context';
 
 const Settings = () => {
   const [shortcut, setShortcut] = useState('');
   const [launchOnLogin, setLaunchOnLogin] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const {
+    status: updateStatus,
+    checkState,
+    errorMessage,
+    refresh: refreshUpdate,
+  } = useContext(AppUpdateContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,6 +105,66 @@ const Settings = () => {
 
       <Divider
         mt="10"
+        mb="4"
+        borderColor="rgba(255, 255, 255, 0.1)"
+      />
+
+      <Box mb="6">
+        <Text fontWeight="bold" mb="2">Actualizaciones</Text>
+
+        {checkState === 'checking' && (
+          <Text color="rgba(255, 255, 255, 0.7)" fontSize="13px">
+            Buscando actualizaciones…
+          </Text>
+        )}
+
+        {checkState === 'error' && (
+          <Text color="#F56565" fontSize="13px">
+            No se pudo verificar actualizaciones
+            {errorMessage ? `: ${errorMessage}` : '.'}
+          </Text>
+        )}
+
+        {checkState === 'ok' && updateStatus && !updateStatus.updateAvailable && (
+          <Text color="rgba(255, 255, 255, 0.7)" fontSize="13px">
+            Estás usando la última versión disponible (
+            {updateStatus.currentVersion}
+            ).
+          </Text>
+        )}
+
+        {checkState === 'ok' && updateStatus && updateStatus.updateAvailable && (
+          <>
+            <Text color="#68D391" fontSize="13px" mb="2">
+              Nueva versión disponible:
+              {' '}
+              <strong>{updateStatus.latestVersion}</strong>
+              {' '}
+              (tienes {updateStatus.currentVersion}).
+            </Text>
+            <Button
+              size="sm"
+              colorScheme="green"
+              onClick={() => openExternal(updateStatus.downloadUrl)}
+            >
+              Descargar actualización
+            </Button>
+          </>
+        )}
+
+        <Button
+          size="xs"
+          variant="ghost"
+          color="rgba(255, 255, 255, 0.5)"
+          mt="2"
+          onClick={() => refreshUpdate()}
+          isDisabled={checkState === 'checking'}
+        >
+          Volver a comprobar
+        </Button>
+      </Box>
+
+      <Divider
         mb="4"
         borderColor="rgba(255, 255, 255, 0.1)"
       />

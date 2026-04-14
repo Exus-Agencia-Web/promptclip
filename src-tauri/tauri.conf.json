@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "promptclip",
-    "version": "1.0.3"
+    "version": "1.0.4"
   },
   "tauri": {
     "systemTray": {
@@ -26,6 +26,15 @@
       },
       "globalShortcut": {
         "all": true
+      },
+      "http": {
+        "request": true,
+        "scope": [
+          "https://raw.githubusercontent.com/*"
+        ]
+      },
+      "shell": {
+        "open": "^https?://"
       },
       "path": {
         "all": true

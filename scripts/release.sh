@@ -30,6 +30,14 @@ conf.package.version = '$NEW';
 fs.writeFileSync(path, JSON.stringify(conf, null, 2) + '\n');
 "
 
+# Keep the README download link in sync. Replaces any PromptClip-X.Y.Z.dmg
+# reference so the link always points to the freshly built DMG.
+README="$ROOT/README.md"
+if [[ -f "$README" ]]; then
+  sed -i '' -E "s/PromptClip-[0-9]+\.[0-9]+\.[0-9]+\.dmg/PromptClip-$NEW.dmg/g" "$README"
+  echo "release: README download link updated to $NEW"
+fi
+
 # Build the .app + .dmg bundle.
 npm run tauri build
 
