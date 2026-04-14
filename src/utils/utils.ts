@@ -63,10 +63,12 @@ export const initialiseApp = async () => {
     await appWindow.hide();
   };
 
-  await listen('showDashboard', () => {
-    appWindow.show();
-    appWindow.setFocus();
-    getDashboardWindow()?.show();
+  await listen('showDashboard', async () => {
+    const dashboard = getDashboardWindow();
+    if (dashboard) {
+      await dashboard.show();
+      await dashboard.setFocus();
+    }
   });
 
   await invoke('launch_on_login', {

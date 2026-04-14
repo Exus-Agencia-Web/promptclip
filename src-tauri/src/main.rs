@@ -68,10 +68,11 @@ fn main() {
                     window.center().unwrap();
                 }
                 "Dashboard" => {
-                    let window = app.get_window("search").unwrap();
-                    window.emit("showDashboard", Some("Yes")).unwrap();
-                    window.show().unwrap();
-                    window.center().unwrap();
+                    if let Some(dashboard) = app.get_window("dashboard") {
+                        let _ = dashboard.show();
+                        let _ = dashboard.set_focus();
+                        let _ = dashboard.center();
+                    }
                 }
                 "Quit" => {
                     std::process::exit(0);

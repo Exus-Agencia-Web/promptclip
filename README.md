@@ -2,8 +2,6 @@
 
 <img src="https://github.com/kgoedecke/promptclip/assets/5519740/812741fa-0311-456f-b769-32cf1e1a5bd6" style="width: 350px;">
 
-Sitio web: [www.getpromptclip.com](https://getpromptclip.com)
-
 PromptClip es una app de Tauri para gestionar prompts de IA de forma sencilla. Ofrece una manera cómoda de guardar prompts y recuperarlos cuando los necesites. Con PromptClip puedes organizar y gestionar tus prompts de IA de forma eficiente para potenciar tu flujo de trabajo.
 
 Una barra de búsqueda global en macOS te permite copiar tus prompts al portapapeles con un par de teclas.
@@ -63,10 +61,6 @@ PromptClip fue construido usando las siguientes tecnologías y librerías:
 
 Agradecemos a los desarrolladores y contribuidores de estos proyectos open-source por su valioso trabajo.
 
-Mantenimiento y mejoras por **[Exus Agencia Web](https://exus.com.co)**.
-
-## Soporte
-
-Si encuentras algún problema o tienes preguntas o sugerencias sobre PromptClip, no dudes en contactarnos creando un issue en el [repositorio de GitHub](https://github.com/kgoedecke/promptclip/) o a través de los canales disponibles.
+Mantenimiento y mejoras por **[Herduin Rivera](https://herduin.com)**.
 
 ¡Gracias por tu interés y apoyo a PromptClip!
