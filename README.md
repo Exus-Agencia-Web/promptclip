@@ -1,70 +1,72 @@
-# 📎 PromptClip - Prompt Manager for MacOS
+# 📎 PromptClip - Gestor de Prompts para macOS
 
 <img src="https://github.com/kgoedecke/promptclip/assets/5519740/812741fa-0311-456f-b769-32cf1e1a5bd6" style="width: 350px;">
 
-Website: [www.getpromptclip.com](https://getpromptclip.com)
+Sitio web: [www.getpromptclip.com](https://getpromptclip.com)
 
-PromptClip is a Tauri app to manage AI prompts easily. It provides a convenient way to save prompts and retrieve them for later use. With PromptClip, you can efficiently manage and organize your AI prompts to enhance your workflow.
+PromptClip es una app de Tauri para gestionar prompts de IA de forma sencilla. Ofrece una manera cómoda de guardar prompts y recuperarlos cuando los necesites. Con PromptClip puedes organizar y gestionar tus prompts de IA de forma eficiente para potenciar tu flujo de trabajo.
 
-A MacOS global search bar makes it easy for you to get your copy your prompts to the clipboard.
+Una barra de búsqueda global en macOS te permite copiar tus prompts al portapapeles con un par de teclas.
 
 ## Demo
 
-#### The main dashboard
-Allows you to add manage prompts using categories, search and more.
+#### Dashboard principal
+Permite añadir y gestionar prompts usando categorías, búsqueda y más.
 
 <img src="https://github.com/kgoedecke/promptclip/assets/5519740/3813baf1-8a71-462b-a54d-cfdf04514143" style="width: 750px;">
 
 
-#### Search Bar
+#### Barra de búsqueda
 
-Access the global MacOS search with `CMD + SHIFT + G`. The search bar works similar to Spotlight or Alfred.
+Accede a la búsqueda global de macOS con `CMD + SHIFT + G`. La barra de búsqueda funciona de manera similar a Spotlight o Alfred.
 
 <img src="https://github.com/kgoedecke/promptclip/assets/5519740/438427a5-89f4-4d56-aaf5-67c391b6bfd2" style="width: 750px;">
 
-## Contributing
+## Contribuir
 
-We welcome contributions from the community! If you would like to contribute to PromptClip, please follow the steps below:
+¡Damos la bienvenida a contribuciones de la comunidad! Si deseas contribuir a PromptClip, sigue los pasos a continuación:
 
-1. Fork the repository and clone it locally.
-2. Install the necessary dependencies by running the appropriate command for your package manager (`npm install` or `yarn`).
-3. Make your desired changes and improvements to the codebase.
-4. Test your changes thoroughly to ensure they don't introduce any bugs or issues.
-5. Commit your changes and push them to your forked repository.
-6. Submit a pull request with a clear description of the changes you made.
+1. Haz un fork del repositorio y clónalo localmente.
+2. Instala las dependencias necesarias ejecutando el comando apropiado para tu gestor de paquetes (`npm install` o `yarn`).
+3. Realiza los cambios y mejoras deseadas en el código.
+4. Prueba tus cambios a fondo para asegurarte de que no introducen bugs.
+5. Haz commit de tus cambios y súbelos a tu fork.
+6. Envía un pull request con una descripción clara de los cambios realizados.
 
-## Building the App
+## Compilar la aplicación
 
-To build PromptClip, follow the steps below:
+Para compilar PromptClip, sigue los pasos:
 
-1. Install the necessary dependencies by running the appropriate command for your package manager (`npm install` or `yarn`).
-2. Build the app by running the appropriate command for your package manager (`npm run build` or `yarn build`).
+1. Instala las dependencias necesarias ejecutando el comando apropiado para tu gestor de paquetes (`npm install` o `yarn`).
+2. Compila la app ejecutando el comando apropiado para tu gestor de paquetes (`npm run build` o `yarn build`).
 
-## Running a Development Version
+## Ejecutar versión de desarrollo
 
-To run PromptClip in development mode, follow the steps below:
+Para ejecutar PromptClip en modo desarrollo, sigue los pasos:
 
-1. Install the necessary dependencies by running the appropriate command for your package manager (`npm install` or `yarn`).
-2. Start the development server by running the appropriate command for your package manager (`npm run tauri dev` or `yarn tauri dev`).
+1. Instala las dependencias necesarias ejecutando el comando apropiado para tu gestor de paquetes (`npm install` o `yarn`).
+2. Inicia el servidor de desarrollo ejecutando el comando apropiado para tu gestor de paquetes (`npm run tauri dev` o `yarn tauri dev`).
 
-If you encounter any issues, please make sure you have all the necessary dependencies installed and try running the appropriate build command (`npm run tauri build` or `yarn tauri build`) after installing dependencies.
+Si encuentras algún problema, asegúrate de tener todas las dependencias necesarias instaladas y prueba ejecutando el comando de build apropiado (`npm run tauri build` o `yarn tauri build`) tras instalar dependencias.
 
-## License
+## Licencia
 
-PromptClip is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+PromptClip está licenciado bajo la [GNU Affero General Public License v3.0](LICENSE).
 
-## Acknowledgements
+## Agradecimientos
 
-PromptClip was built using the following technologies and libraries:
+PromptClip fue construido usando las siguientes tecnologías y librerías:
 
 - Tauri: [https://tauri.app/](https://tauri.app/)
 - React: [https://reactjs.org/](https://reactjs.org/)
 - Chakra UI: [https://chakra-ui.com/](https://chakra-ui.com/)
 
-We express our gratitude to the developers and contributors of these open-source projects for their valuable work.
+Agradecemos a los desarrolladores y contribuidores de estos proyectos open-source por su valioso trabajo.
 
-## Support
+Mantenimiento y mejoras por **[Exus Agencia Web](https://exus.com.co)**.
 
-If you encounter any issues or have any questions or suggestions regarding PromptClip, please feel free to reach out to us by creating an issue in the [GitHub repository](https://github.com/kgoedecke/promptclip/) or contacting us through other available channels.
+## Soporte
 
-Thank you for your interest and support in PromptClip!
+Si encuentras algún problema o tienes preguntas o sugerencias sobre PromptClip, no dudes en contactarnos creando un issue en el [repositorio de GitHub](https://github.com/kgoedecke/promptclip/) o a través de los canales disponibles.
+
+¡Gracias por tu interés y apoyo a PromptClip!
