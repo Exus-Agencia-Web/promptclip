@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "promptclip",
-    "version": "1.0.0"
+    "version": "1.0.2"
   },
   "tauri": {
     "systemTray": {
@@ -75,7 +75,8 @@
       "resources": [],
       "shortDescription": "",
       "targets": [
-        "app", "dmg"
+        "app",
+        "dmg"
       ],
       "windows": {
         "certificateThumbprint": null,
