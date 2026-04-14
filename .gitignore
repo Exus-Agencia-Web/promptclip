@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Release credentials (Apple Developer)
+.env.release
+*.p8
+macOS
