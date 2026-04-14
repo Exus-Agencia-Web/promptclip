@@ -1,67 +1,97 @@
 import { Text } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DetailedPrompt from '../../../../components/DetailedPrompt/DetailedPrompt.component';
 import CustomInput from '../../../../components/CustomInput/CustomInput.component';
 import { IPrompt, ICategory } from '../../../../types/Prompt.types';
 import { filterPrompts } from '../../../../utils/utils';
 import { UpdateContext } from '../../../../contexts/update.context';
+import { CategoriesContext } from '../../../../contexts/categories.context';
 import { routes } from '../routes';
 
-interface DisplayPromptsProps {
-  prompts: IPrompt[];
-  setPrompts: (prompts: IPrompt[]) => void;
-  filterOption?:
+type StaticFilter =
   | 'DateCreated'
   | 'Favorites'
   | 'MostUsed'
   | 'RecentlyUsed'
-  | 'AllPrompts'
-  | ICategory
-  | null;
+  | 'AllPrompts';
+
+interface DisplayPromptsProps {
+  prompts: IPrompt[];
+  setPrompts: (prompts: IPrompt[]) => void;
+  filterOption?: StaticFilter | ICategory | null;
 }
 
 const DisplayPrompts = ({ prompts, filterOption }: DisplayPromptsProps) => {
   const [sortedPrompts, setSortedPrompts] = useState(prompts);
   const { setUpdate } = useContext(UpdateContext);
+  const { categories } = useContext(CategoriesContext);
+  const { uuid: categoryUuidFromUrl } = useParams();
   const nav = useNavigate();
 
+  const categoryFromUrl: ICategory | undefined = categoryUuidFromUrl
+    ? categories.find((category) => category.uuid === categoryUuidFromUrl)
+    : undefined;
+
+  const activeFilter: StaticFilter | ICategory | null | undefined =
+    filterOption ?? categoryFromUrl;
+
   useEffect(() => {
-    if (filterOption) {
+    if (activeFilter) {
       let filteredPrompts = prompts;
 
-      if (filterOption === 'Favorites') {
+      if (activeFilter === 'Favorites') {
         filteredPrompts = prompts.filter((prompt) => prompt.isFavorite);
-      } else if (filterOption === 'DateCreated') {
-        filteredPrompts = prompts.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
-      } else if (filterOption === 'MostUsed') {
-        filteredPrompts = prompts.sort((a, b) => b.used - a.used);
-      } else if (filterOption === 'RecentlyUsed') {
-        filteredPrompts = prompts.sort((a, b) => (b.last_used_at || 0) - (a.last_used_at || 0));
-      } else if (filterOption === 'AllPrompts') {
+      } else if (activeFilter === 'DateCreated') {
+        filteredPrompts = [...prompts].sort(
+          (a, b) => (b.created_at || 0) - (a.created_at || 0),
+        );
+      } else if (activeFilter === 'MostUsed') {
+        filteredPrompts = [...prompts].sort((a, b) => b.used - a.used);
+      } else if (activeFilter === 'RecentlyUsed') {
+        filteredPrompts = [...prompts].sort(
+          (a, b) => (b.last_used_at || 0) - (a.last_used_at || 0),
+        );
+      } else if (activeFilter === 'AllPrompts') {
         filteredPrompts = prompts;
-      } else if (filterOption instanceof Object) {
-        filteredPrompts = prompts.filter((prompt) => prompt.category_id === filterOption.uuid);
+      } else if (typeof activeFilter === 'object') {
+        filteredPrompts = prompts.filter(
+          (prompt) => prompt.category_id === activeFilter.uuid,
+        );
       }
 
       setSortedPrompts([...filteredPrompts]);
     } else {
       setSortedPrompts([...prompts]);
     }
-  }, [filterOption, prompts]);
+  }, [activeFilter, prompts]);
+
+  if (categoryUuidFromUrl && categories.length > 0 && !categoryFromUrl) {
+    return (
+      <div>
+        <Text fontWeight="bold">Category not found</Text>
+        <Text color="grey" marginTop="8px">
+          This category may have been deleted.
+        </Text>
+      </div>
+    );
+  }
 
   const getFilterOptionLabel = (): string => {
-    if (filterOption === 'DateCreated') {
+    if (activeFilter === 'DateCreated') {
       return 'All Prompts';
     }
-    if (typeof filterOption === 'string') {
-      return filterOption;
+    if (typeof activeFilter === 'string') {
+      return activeFilter;
     }
-    if (filterOption instanceof Object && filterOption.name) {
-      return filterOption.name;
+    if (activeFilter && typeof activeFilter === 'object' && activeFilter.name) {
+      return activeFilter.name;
     }
     return 'All Prompts';
   };
+
+  const editableCategory: ICategory | null =
+    activeFilter && typeof activeFilter === 'object' ? activeFilter : null;
 
   return (
     <div>
@@ -74,7 +104,6 @@ const DisplayPrompts = ({ prompts, filterOption }: DisplayPromptsProps) => {
         <Text fontWeight="bold">{getFilterOptionLabel()}</Text>
         <div style={{ display: 'flex', gap: '24px' }}>
           <Text
-            // fontWeight="light"
             color="grey"
             cursor="pointer"
             onClick={() => {
@@ -83,13 +112,12 @@ const DisplayPrompts = ({ prompts, filterOption }: DisplayPromptsProps) => {
           >
             Refresh
           </Text>
-          {filterOption instanceof Object && filterOption.name && (
+          {editableCategory && (
             <Text
-              // fontWeight="light"
               color="grey"
               cursor="pointer"
               onClick={() => {
-                nav(`${routes.editCategory}/${filterOption.uuid}`);
+                nav(`${routes.editCategory}/${editableCategory.uuid}`);
               }}
             >
               Edit Category

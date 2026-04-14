@@ -3,11 +3,15 @@ import {
   Box, FormControl, FormLabel, Text, VStack, useToast, Select,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
 import CustomInput from '../../../../components/CustomInput/CustomInput.component';
 import { storePrompt, getCategories } from '../../../../utils/database';
 import CustomButton from '../../../../components/CustomButton/CustomButton.component';
 import { UpdateContext } from '../../../../contexts/update.context';
 import { ICategory } from '../../../../types/Prompt.types';
+import { routes } from '../routes';
+
+const NEW_CATEGORY_SENTINEL = '__new_category__';
 
 function AddPrompt() {
   const [title, setTitle] = useState('');
@@ -16,6 +20,7 @@ function AddPrompt() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const { setUpdate } = useContext(UpdateContext);
   const toast = useToast();
+  const nav = useNavigate();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -84,7 +89,13 @@ function AddPrompt() {
             placeholder="Select a category"
             color="#667085"
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value === NEW_CATEGORY_SENTINEL) {
+                nav(routes.addCategory);
+                return;
+              }
+              setSelectedCategory(e.target.value);
+            }}
             style={{
               borderRadius: '7px',
               border: '0.5px solid var(--dark-quaternary, rgba(255, 255, 255, 0.10))',
@@ -96,6 +107,7 @@ function AddPrompt() {
                 {category.name}
               </option>
             ))}
+            <option value={NEW_CATEGORY_SENTINEL}>+ Create new category…</option>
           </Select>
         </FormControl>
 

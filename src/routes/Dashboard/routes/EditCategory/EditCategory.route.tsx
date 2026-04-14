@@ -1,13 +1,19 @@
 import { useState, useContext, useEffect } from 'react';
 import {
-  Box, FormControl, FormLabel, Text, VStack, useToast,
+  Box, FormControl, FormLabel, Text, VStack, useToast, HStack,
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CustomInput from '../../../../components/CustomInput/CustomInput.component';
-import { updateCategory, getCategoryByUUID } from '../../../../utils/database';
+import {
+  updateCategory,
+  getCategoryByUUID,
+  deleteCategory,
+} from '../../../../utils/database';
 import CustomButton from '../../../../components/CustomButton/CustomButton.component';
 import { UpdateContext } from '../../../../contexts/update.context';
+import { TrashIcon } from '../../../../components/Icons/TrashIcon';
+import { routes } from '../routes';
 
 function EditCategory() {
   const { uuid } = useParams();
@@ -17,6 +23,7 @@ function EditCategory() {
   const [newCategoryName, setNewCategoryName] = useState('');
   const { setUpdate } = useContext(UpdateContext);
   const toast = useToast();
+  const nav = useNavigate();
 
   useEffect(() => {
     const fetchCategoryName = async () => {
@@ -40,20 +47,9 @@ function EditCategory() {
   }, [uuid]);
 
   const handleEditCategory = async () => {
-    const categorySlug = newCategoryName.trim().toLowerCase();
+    const trimmed = newCategoryName.trim();
 
-    if (!/^[a-z0-9]+$/i.test(categorySlug)) {
-      toast({
-        title: 'Error',
-        description: 'Category name can only contain letters and numbers.',
-        status: 'error',
-        duration: 4000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    if (categorySlug === '') {
+    if (trimmed.length === 0) {
       toast({
         title: 'Error',
         description: 'Please enter a category name.',
@@ -64,13 +60,25 @@ function EditCategory() {
       return;
     }
 
-    try {
-      await updateCategory(uuid, categorySlug);
-      setUpdate();
-    } catch (err) {
+    if (trimmed.length > 60) {
       toast({
         title: 'Error',
-        description: 'Failed to update the category.',
+        description: 'Category name must be 60 characters or fewer.',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      await updateCategory(uuid, trimmed);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('updateCategory failed', err);
+      toast({
+        title: 'Error',
+        description: err instanceof Error ? err.message : 'Failed to update the category.',
         status: 'error',
         duration: 4000,
         isClosable: true,
@@ -86,6 +94,37 @@ function EditCategory() {
       isClosable: true,
     });
     setUpdate();
+  };
+
+  const handleDeleteCategory = async () => {
+    const confirmed = window.confirm(
+      'Delete this category? Prompts inside will be kept but unassigned.',
+    );
+    if (!confirmed) return;
+
+    try {
+      await deleteCategory(uuid);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('deleteCategory failed', err);
+      toast({
+        title: 'Error',
+        description: err instanceof Error ? err.message : 'Failed to delete the category.',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    toast({
+      title: 'Category deleted.',
+      status: 'success',
+      duration: 4000,
+      isClosable: true,
+    });
+    setUpdate();
+    nav(routes.allPrompts);
   };
 
   return (
@@ -105,9 +144,14 @@ function EditCategory() {
           />
         </FormControl>
 
-        <CustomButton icon={<CheckIcon />} onClick={handleEditCategory}>
-          Save Changes
-        </CustomButton>
+        <HStack spacing={3}>
+          <CustomButton icon={<CheckIcon />} onClick={handleEditCategory}>
+            Save Changes
+          </CustomButton>
+          <CustomButton icon={<TrashIcon />} onClick={handleDeleteCategory}>
+            Delete Category
+          </CustomButton>
+        </HStack>
       </VStack>
     </Box>
   );

@@ -116,8 +116,8 @@ function Dashboard() {
                 key={category.uuid}
                 title={category.name}
                 count={category.promptsCount}
-                to={`/dashboard/${category.name}`}
-                active={location.pathname === `/dashboard/${category.name}`}
+                to={`${routes.category}/${category.uuid}`}
+                active={location.pathname === `${routes.category}/${category.uuid}`}
               />
             ))}
           </div>
@@ -234,19 +234,15 @@ function Dashboard() {
               }
             />
             <Route path="/add-category" element={<AddCategory />} />
-            {categories.map((category) => (
-              <Route
-                key={category.uuid}
-                path={`/${category.name}`}
-                element={(
-                  <DisplayPrompts
-                    prompts={prompts}
-                    setPrompts={setPrompts}
-                    filterOption={category}
-                  />
-                )}
-              />
-            ))}
+            <Route
+              path="/category/:uuid"
+              element={(
+                <DisplayPrompts
+                  prompts={prompts}
+                  setPrompts={setPrompts}
+                />
+              )}
+            />
           </Routes>
         </div>
       </div>

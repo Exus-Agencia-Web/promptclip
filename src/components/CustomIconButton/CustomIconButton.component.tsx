@@ -28,7 +28,6 @@ function CustomIconButton({
       _hover={{}}
       borderColor={dark ? darkBackgroundBorder : lightBackgroundBorder}
       background={backgroundColour || (dark ? darkBackground : lightBackground)}
-      disabled
     />
   );
 }

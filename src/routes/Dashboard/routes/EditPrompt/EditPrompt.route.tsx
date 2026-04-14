@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
   FormControl,
@@ -15,6 +15,9 @@ import { updatePrompt, getCategories, getPromptByUUID } from '../../../../utils/
 import CustomButton from '../../../../components/CustomButton/CustomButton.component';
 import { UpdateContext } from '../../../../contexts/update.context';
 import { IPrompt, ICategory } from '../../../../types/Prompt.types';
+import { routes } from '../routes';
+
+const NEW_CATEGORY_SENTINEL = '__new_category__';
 
 function EditPrompt() {
   const [title, setTitle] = useState('');
@@ -23,6 +26,7 @@ function EditPrompt() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const { setUpdate } = useContext(UpdateContext);
   const toast = useToast();
+  const nav = useNavigate();
   const { uuid } = useParams();
   if (!uuid) {
     return null;
@@ -112,7 +116,13 @@ function EditPrompt() {
             placeholder="Select a category"
             color="#667085"
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value === NEW_CATEGORY_SENTINEL) {
+                nav(routes.addCategory);
+                return;
+              }
+              setSelectedCategory(e.target.value);
+            }}
             style={{
               borderRadius: '7px',
               border: '0.5px solid var(--dark-quaternary, rgba(255, 255, 255, 0.10))',
@@ -124,6 +134,7 @@ function EditPrompt() {
                 {category.name}
               </option>
             ))}
+            <option value={NEW_CATEGORY_SENTINEL}>+ Create new category…</option>
           </Select>
         </FormControl>
 

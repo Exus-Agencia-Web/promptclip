@@ -2,13 +2,17 @@ import Database from 'tauri-plugin-sql-api';
 import { v4 as uuidv4 } from 'uuid';
 import { ICategory, IPrompt } from '../types/Prompt.types';
 
-let db: Database;
+let dbPromise: Promise<Database> | null = null;
 
-(async () => {
-  db = await Database.load('sqlite:prompts.db');
-})();
+const getDb = (): Promise<Database> => {
+  if (!dbPromise) {
+    dbPromise = Database.load('sqlite:prompts.db');
+  }
+  return dbPromise;
+};
 
 export const createPromptsTable = async () => {
+  const db = await getDb();
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS prompts (
       uuid TEXT PRIMARY KEY,
@@ -32,28 +36,34 @@ export const createPromptsTable = async () => {
 };
 
 const updateCategoryPromptsCount = async (categoryId: string) => {
-  const updateQuery = `
-    UPDATE categories
-    SET promptsCount = (
-      SELECT COUNT(*)
-      FROM prompts
-      WHERE category_id = '${categoryId}'
-    )
-    WHERE uuid = '${categoryId}'
-  `;
-  await db.execute(updateQuery);
+  const db = await getDb();
+  await db.execute(
+    `UPDATE categories
+     SET promptsCount = (
+       SELECT COUNT(*) FROM prompts WHERE category_id = $1
+     )
+     WHERE uuid = $2`,
+    [categoryId, categoryId],
+  );
 };
 
 export const updateAllCategoryPromptsCounts = async () => {
-  const selectQuery = `
-    SELECT uuid
-    FROM categories
-  `;
-  const categories: { uuid: string }[] = await db.select(selectQuery);
+  const db = await getDb();
+  const categories: { uuid: string }[] = await db.select(
+    'SELECT uuid FROM categories',
+  );
+  await Promise.all(
+    categories.map((category) => updateCategoryPromptsCount(category.uuid)),
+  );
+};
 
-  categories.forEach(async (category) => {
-    await updateCategoryPromptsCount(category.uuid);
-  });
+const updateAffectedCategoryPromptsCounts = async (
+  ...categoryIds: (string | null | undefined)[]
+) => {
+  const unique = Array.from(
+    new Set(categoryIds.filter((id): id is string => Boolean(id))),
+  );
+  await Promise.all(unique.map((id) => updateCategoryPromptsCount(id)));
 };
 
 export const storePrompt = async (
@@ -61,12 +71,13 @@ export const storePrompt = async (
   prompt: string,
   categoryId: string | null,
 ) => {
+  const db = await getDb();
   const uuid = uuidv4();
-  const insertQuery = `
-    INSERT INTO prompts (uuid, promptName, prompt, category_id)
-    VALUES ('${uuid}', '${promptName}', '${prompt}', ${categoryId ? `'${categoryId}'` : 'NULL'})
-  `;
-  await db.execute(insertQuery);
+  await db.execute(
+    `INSERT INTO prompts (uuid, promptName, prompt, category_id)
+     VALUES ($1, $2, $3, $4)`,
+    [uuid, promptName, prompt, categoryId],
+  );
 
   if (categoryId) {
     await updateCategoryPromptsCount(categoryId);
@@ -74,67 +85,79 @@ export const storePrompt = async (
 };
 
 export const updatePrompt = async (prompt: IPrompt) => {
-  const updateQuery = `
-    UPDATE prompts
-    SET
-      promptName = '${prompt.promptName}',
-      prompt = '${prompt.prompt}',
-      category_id = ${prompt.category_id ? `'${prompt.category_id}'` : 'NULL'}
-    WHERE uuid = '${prompt.uuid}'
-  `;
+  const db = await getDb();
+  const previous: { category_id: string | null }[] = await db.select(
+    'SELECT category_id FROM prompts WHERE uuid = $1',
+    [prompt.uuid],
+  );
+  const previousCategoryId = previous[0]?.category_id ?? null;
 
-  await db.execute(updateQuery);
-  await updateAllCategoryPromptsCounts();
+  await db.execute(
+    `UPDATE prompts
+     SET promptName = $1, prompt = $2, category_id = $3
+     WHERE uuid = $4`,
+    [prompt.promptName, prompt.prompt, prompt.category_id, prompt.uuid],
+  );
+
+  await updateAffectedCategoryPromptsCounts(
+    previousCategoryId,
+    prompt.category_id,
+  );
 };
 
 export const insertCategory = async (name: string) => {
-  const existingCategoryQuery = `
-    SELECT uuid
-    FROM categories
-    WHERE name = '${name}'
-  `;
-  const existingCategory: ICategory[] = await db.select(existingCategoryQuery);
+  const db = await getDb();
+  const existingCategory: ICategory[] = await db.select(
+    'SELECT uuid FROM categories WHERE name = $1',
+    [name],
+  );
 
   if (existingCategory.length > 0) {
     throw new Error('Category with the same name already exists.');
   }
 
   const uuid = uuidv4();
-  const insertQuery = `
-    INSERT INTO categories (uuid, name)
-    VALUES ('${uuid}', '${name}')
-  `;
-  await db.execute(insertQuery);
+  await db.execute(
+    'INSERT INTO categories (uuid, name) VALUES ($1, $2)',
+    [uuid, name],
+  );
 };
 
 export const updateCategory = async (uuid: string, newName: string) => {
-  const existingCategoryQuery = `
-    SELECT uuid
-    FROM categories
-    WHERE uuid = '${uuid}'
-  `;
-  const existingCategory: ICategory[] = await db.select(existingCategoryQuery);
+  const db = await getDb();
+  const existingCategory: ICategory[] = await db.select(
+    'SELECT uuid FROM categories WHERE uuid = $1',
+    [uuid],
+  );
 
   if (existingCategory.length === 0) {
     throw new Error('Category with the provided UUID does not exist.');
   }
 
-  const updateQuery = `
-    UPDATE categories
-    SET name = '${newName}'
-    WHERE uuid = '${uuid}'
-  `;
-  await db.execute(updateQuery);
+  await db.execute(
+    'UPDATE categories SET name = $1 WHERE uuid = $2',
+    [newName, uuid],
+  );
+};
+
+export const deleteCategory = async (uuid: string) => {
+  const db = await getDb();
+  await db.execute(
+    'UPDATE prompts SET category_id = NULL WHERE category_id = $1',
+    [uuid],
+  );
+  await db.execute(
+    'DELETE FROM categories WHERE uuid = $1',
+    [uuid],
+  );
 };
 
 export const getCategoryByUUID = async (uuid: string): Promise<ICategory | null> => {
-  const query = `
-    SELECT *
-    FROM categories
-    WHERE uuid = '${uuid}'
-    LIMIT 1
-  `;
-  const result: ICategory[] = await db.select(query);
+  const db = await getDb();
+  const result: ICategory[] = await db.select(
+    'SELECT * FROM categories WHERE uuid = $1 LIMIT 1',
+    [uuid],
+  );
   return result.length > 0 ? result[0] : null;
 };
 
@@ -142,47 +165,41 @@ export const getPrompts = async (
   filter: 'lastUsed' | 'used' | 'dateCreated',
   favorites?: boolean,
 ): Promise<IPrompt[]> => {
+  const db = await getDb();
   let selectQuery = `
     SELECT prompts.*, categories.name AS categoryName
     FROM prompts
     LEFT JOIN categories ON prompts.category_id = categories.uuid`;
 
+  const params: unknown[] = [];
   if (favorites !== undefined) {
-    selectQuery += `
-      WHERE isFavorite = ${favorites ? 1 : 0}
-    `;
+    selectQuery += ' WHERE isFavorite = $1';
+    params.push(favorites ? 1 : 0);
   }
 
   if (filter === 'lastUsed') {
-    selectQuery += `
-      ORDER BY last_used_at DESC
-    `;
+    selectQuery += ' ORDER BY last_used_at DESC';
   } else if (filter === 'used') {
-    selectQuery += `
-      ORDER BY used DESC
-    `;
+    selectQuery += ' ORDER BY used DESC';
   } else if (filter === 'dateCreated') {
-    selectQuery += `
-      ORDER BY created_at DESC
-    `;
+    selectQuery += ' ORDER BY created_at DESC';
   }
 
-  const result: IPrompt[] = await db.select(selectQuery);
-  return result.map((prompt) => ({
-    ...prompt,
-    category: prompt.category_id ? { uuid: prompt.category_id, name: prompt.category_id } : null,
-  }));
+  const result: IPrompt[] = params.length > 0
+    ? await db.select(selectQuery, params)
+    : await db.select(selectQuery);
+  return result;
 };
 
 export const getPromptByUUID = async (uuid: string): Promise<IPrompt | null> => {
-  const selectQuery = `
-    SELECT prompts.*, categories.name AS categoryName
-    FROM prompts
-    LEFT JOIN categories ON prompts.category_id = categories.uuid
-    WHERE prompts.uuid = '${uuid}'
-  `;
-
-  const result: (IPrompt & { categoryName: string })[] = await db.select(selectQuery);
+  const db = await getDb();
+  const result: IPrompt[] = await db.select(
+    `SELECT prompts.*, categories.name AS categoryName
+     FROM prompts
+     LEFT JOIN categories ON prompts.category_id = categories.uuid
+     WHERE prompts.uuid = $1`,
+    [uuid],
+  );
 
   if (result.length > 0) {
     const prompt = result[0];
@@ -202,39 +219,31 @@ export const getPromptByUUID = async (uuid: string): Promise<IPrompt | null> => 
 };
 
 export const getCategories = async (): Promise<ICategory[]> => {
-  const selectQuery = `
-    SELECT * FROM categories
-  `;
-  const result: ICategory[] = await db.select(selectQuery);
+  const db = await getDb();
+  const result: ICategory[] = await db.select('SELECT * FROM categories');
   return result;
 };
 
 export const searchPrompts = async (searchTerm: string): Promise<IPrompt[]> => {
-  const selectQuery = `
-    SELECT * FROM prompts
-    WHERE promptName LIKE '%${searchTerm}%'
-    OR prompt LIKE '%${searchTerm}%'
-  `;
-  const result: IPrompt[] = await db.select(selectQuery);
+  const db = await getDb();
+  const pattern = `%${searchTerm}%`;
+  const result: IPrompt[] = await db.select(
+    `SELECT * FROM prompts
+     WHERE promptName LIKE $1 OR prompt LIKE $2`,
+    [pattern, pattern],
+  );
   return result;
 };
 
 export const deletePrompt = async (uuid: string) => {
-  const deleteQuery = `
-    DELETE FROM prompts
-    WHERE uuid = '${uuid}'
-  `;
+  const db = await getDb();
+  const rows: { category_id: string | null }[] = await db.select(
+    'SELECT category_id FROM prompts WHERE uuid = $1',
+    [uuid],
+  );
+  const categoryId = rows[0]?.category_id ?? null;
 
-  const getCategoryQuery = `
-    SELECT category_id
-    FROM prompts
-    WHERE uuid = '${uuid}'
-  `;
-
-  const result: { category_id: string | null }[] = await db.select(getCategoryQuery);
-  const categoryId = result[0]?.category_id;
-
-  await db.execute(deleteQuery);
+  await db.execute('DELETE FROM prompts WHERE uuid = $1', [uuid]);
 
   if (categoryId) {
     await updateCategoryPromptsCount(categoryId);
@@ -242,22 +251,20 @@ export const deletePrompt = async (uuid: string) => {
 };
 
 export const incrementUsageAndSetLastUsed = async (uuid: string) => {
-  const updateQuery = `
-    UPDATE prompts
-    SET used = used + 1, last_used_at = strftime('%s', 'now')
-    WHERE uuid = '${uuid}'
-  `;
-
-  await db.execute(updateQuery);
+  const db = await getDb();
+  await db.execute(
+    `UPDATE prompts
+     SET used = used + 1, last_used_at = strftime('%s', 'now')
+     WHERE uuid = $1`,
+    [uuid],
+  );
 };
 
 export const toggleFavorite = async (uuid: string, isFavorite: boolean) => {
+  const db = await getDb();
   const favorite = isFavorite ? 0 : 1;
-  const updateQuery = `
-    UPDATE prompts
-    SET isFavorite = ${favorite}
-    WHERE uuid = '${uuid}'
-  `;
-
-  await db.execute(updateQuery);
+  await db.execute(
+    'UPDATE prompts SET isFavorite = $1 WHERE uuid = $2',
+    [favorite, uuid],
+  );
 };

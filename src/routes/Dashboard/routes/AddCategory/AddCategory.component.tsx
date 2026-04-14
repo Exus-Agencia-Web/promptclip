@@ -14,20 +14,9 @@ function AddCategory() {
   const toast = useToast();
 
   const handleAddCategory = async () => {
-    const categorySlug = categoryName.trim().toLowerCase();
+    const trimmed = categoryName.trim();
 
-    if (!/^[a-z0-9]+$/i.test(categorySlug)) {
-      toast({
-        title: 'Error',
-        description: 'Category name can only contain letters and numbers.',
-        status: 'error',
-        duration: 4000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    if (categorySlug === '') {
+    if (trimmed.length === 0) {
       toast({
         title: 'Error',
         description: 'Please enter a category name.',
@@ -37,12 +26,26 @@ function AddCategory() {
       });
       return;
     }
-    try {
-      await insertCategory(categorySlug);
-    } catch (err) {
+
+    if (trimmed.length > 60) {
       toast({
         title: 'Error',
-        description: 'Category already exists.',
+        description: 'Category name must be 60 characters or fewer.',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      await insertCategory(trimmed);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('insertCategory failed', err);
+      toast({
+        title: 'Error',
+        description: err instanceof Error ? err.message : 'Failed to create category.',
         status: 'error',
         duration: 4000,
         isClosable: true,

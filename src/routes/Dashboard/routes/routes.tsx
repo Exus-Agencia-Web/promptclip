@@ -7,5 +7,6 @@ export const routes = {
   addCategory: '/dashboard/add-category',
   editCategory: '/dashboard/edit-category',
   editPrompt: '/dashboard/edit-prompt',
+  category: '/dashboard/category',
   settings: '/dashboard/settings',
 };
