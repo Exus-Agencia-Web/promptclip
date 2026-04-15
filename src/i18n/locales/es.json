@@ -88,5 +88,20 @@
     "description": "Tienes la {{current}}. Descarga el DMG desde GitHub.",
     "download": "Descargar",
     "later": "Después"
+  },
+  "search": {
+    "placeholder": "Buscar un prompt",
+    "promptsLabel": "Prompts",
+    "refresh": "Refrescar",
+    "noPrompts": "No se encontraron prompts",
+    "actionsLabel": "Acciones",
+    "copySelected": "Copiar seleccionado",
+    "newPrompt": "Nuevo prompt"
+  },
+  "tray": {
+    "show": "Mostrar",
+    "hide": "Ocultar",
+    "dashboard": "Panel",
+    "quit": "Salir"
   }
 }

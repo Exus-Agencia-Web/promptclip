@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 import { IPrompt } from '../../types/Prompt.types';
 import PromptButton from '../PromptButton/PromptButton.component';
 
@@ -7,6 +8,8 @@ const Prompts: React.FC<{ prompts: IPrompt[]; refreshPrompts: () => void }> = ({
   prompts,
   refreshPrompts,
 }) => {
+  const { t } = useTranslation();
+
   const renderPrompts = () => {
     if (prompts.length === 0) {
       return (
@@ -18,7 +21,7 @@ const Prompts: React.FC<{ prompts: IPrompt[]; refreshPrompts: () => void }> = ({
             textAlign: 'center',
           }}
         >
-          No prompts found
+          {t('search.noPrompts')}
         </p>
       );
     }
@@ -41,10 +44,10 @@ const Prompts: React.FC<{ prompts: IPrompt[]; refreshPrompts: () => void }> = ({
         }}
       >
         <Text fontSize="14px" color="#78787E">
-          Prompts
+          {t('search.promptsLabel')}
         </Text>
         <Text fontSize="14px" color="#78787E" cursor="pointer" onClick={refreshPrompts}>
-          Refresh
+          {t('search.refresh')}
         </Text>
       </div>
       <div style={{ padding: '5px 10px 10px 10px' }}>{renderPrompts()}</div>

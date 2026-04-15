@@ -5,7 +5,7 @@ import {
 import { invoke } from '@tauri-apps/api';
 import { open as openExternal } from '@tauri-apps/api/shell';
 import { useTranslation } from 'react-i18next';
-import { store, updateShortcut } from '../../../../utils/utils';
+import { store, updateShortcut, syncTrayLabels } from '../../../../utils/utils';
 import { AppUpdateContext } from '../../../../contexts/appUpdate.context';
 import { SupportedLanguage, SUPPORTED_LANGUAGES, setLanguage } from '../../../../i18n';
 
@@ -90,6 +90,7 @@ const Settings = () => {
     await setLanguage(next);
     await store.set('language', next);
     await store.save();
+    await syncTrayLabels();
   };
 
   return (

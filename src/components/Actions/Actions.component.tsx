@@ -1,5 +1,6 @@
 import React from 'react';
 import { Flex, Text } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 import CustomIconButton from '../CustomIconButton/CustomIconButton.component';
 
 type ActionOptionProps = {
@@ -45,31 +46,34 @@ const ActionOption: React.FC<ActionOptionProps> = ({
 };
 
 // TODO: Reduce the space taken by Actions component
-const Actions: React.FC = () => (
-  <div
-    style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: '10px',
-    }}
-  >
-    <Flex width="680px" justifyContent="space-between" alignItems="center">
-      <Text fontWeight="bold" fontSize="xs" color="#7D7A75">
-        Actions
-      </Text>
+const Actions: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: '10px',
+      }}
+    >
+      <Flex width="680px" justifyContent="space-between" alignItems="center">
+        <Text fontWeight="bold" fontSize="xs" color="#7D7A75">
+          {t('search.actionsLabel')}
+        </Text>
 
-      <div
-        style={{
-          display: 'flex',
-          gap: '20px',
-        }}
-      >
-        <ActionOption text="Copy Selected" iconText="↵" dark marginTop="4px" />
-        <ActionOption text="New Prompt" iconText={['⌘', 'N']} dark />
-      </div>
-    </Flex>
-  </div>
-);
+        <div
+          style={{
+            display: 'flex',
+            gap: '20px',
+          }}
+        >
+          <ActionOption text={t('search.copySelected')} iconText="↵" dark marginTop="4px" />
+          <ActionOption text={t('search.newPrompt')} iconText={['⌘', 'N']} dark />
+        </div>
+      </Flex>
+    </div>
+  );
+};
 
 export default Actions;

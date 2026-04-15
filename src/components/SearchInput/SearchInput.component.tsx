@@ -1,6 +1,7 @@
 import { SearchIcon } from '@chakra-ui/icons';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { searchPrompts } from '../../utils/database';
 import { PromptsContext } from '../../contexts/prompts.context';
 import { IPrompt } from '../../types/Prompt.types';
@@ -14,6 +15,7 @@ const onSearchInputChanged = async (
 
 function SearchInput() {
   const { setPrompts } = React.useContext(PromptsContext);
+  const { t } = useTranslation();
 
   return (
     <InputGroup>
@@ -29,7 +31,7 @@ function SearchInput() {
       <Input
         id="search-input"
         type="text"
-        placeholder="Search for a prompt"
+        placeholder={t('search.placeholder')}
         _placeholder={{ color: '#4F4F4F' }}
         fontSize="18px"
         size="lg"

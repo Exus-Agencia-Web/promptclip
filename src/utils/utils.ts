@@ -10,6 +10,19 @@ import i18n, { SUPPORTED_LANGUAGES, SupportedLanguage } from '../i18n';
 
 export const store = new Store('.settings.dat');
 
+export const syncTrayLabels = async () => {
+  try {
+    await invoke('set_tray_labels', {
+      show: i18n.t('tray.show'),
+      hide: i18n.t('tray.hide'),
+      dashboard: i18n.t('tray.dashboard'),
+      quit: i18n.t('tray.quit'),
+    });
+  } catch {
+    // tray not ready yet — ignore
+  }
+};
+
 const loadLanguagePreference = async () => {
   const saved = (await store.get('language')) as SupportedLanguage | null;
   if (saved && SUPPORTED_LANGUAGES.includes(saved)) {
@@ -54,6 +67,7 @@ export const initialiseApp = async () => {
   await invoke('init_ns_panel', {
     appShortcut: await store.get('shortcut'),
   });
+  await syncTrayLabels();
   createDashboardWindow();
 
   document.addEventListener('keydown', (event) => {

@@ -5,10 +5,10 @@ import {
   FormControl,
   FormLabel,
   Text,
-  VStack,
   useToast,
   Select,
   HStack,
+  Flex,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useTranslation } from 'react-i18next';
@@ -91,70 +91,81 @@ function EditPrompt() {
     setUpdate();
   };
 
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value === NEW_CATEGORY_SENTINEL) {
+      nav(routes.addCategory);
+      return;
+    }
+    setSelectedCategory(e.target.value);
+  };
+
   return (
-    <Box borderRadius="md">
-      <VStack spacing={4} align="start">
-        <FormControl>
-          <Text fontWeight="bold">{t('prompts.editPromptTitle')}</Text>
-        </FormControl>
+    <Flex
+      borderRadius="md"
+      direction="column"
+      height="calc(100vh - 127px)"
+      gap={4}
+    >
+      <Text fontWeight="bold" flexShrink={0}>{t('prompts.editPromptTitle')}</Text>
 
-        <FormControl>
-          <FormLabel>{t('prompts.titleLabel')}</FormLabel>
-          <HStack align="center" spacing={2}>
-            <IconPicker value={icon} onChange={setIcon} />
-            <Box flex="1">
-              <CustomInput
-                placeholder={t('prompts.titlePlaceholder')}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </Box>
-          </HStack>
-        </FormControl>
+      <FormControl flexShrink={0}>
+        <FormLabel>{t('prompts.titleLabel')}</FormLabel>
+        <HStack align="center" spacing={2}>
+          <IconPicker value={icon} onChange={setIcon} />
+          <Box flex="1">
+            <CustomInput
+              placeholder={t('prompts.titlePlaceholder')}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </Box>
+          <Box flexBasis="220px" flexShrink={0}>
+            <Select
+              placeholder={t('prompts.selectCategory')}
+              color="#667085"
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              style={{
+                borderRadius: '7px',
+                border: '0.5px solid var(--dark-quaternary, rgba(255, 255, 255, 0.10))',
+                background: 'rgba(255, 255, 255, 0.05)',
+              }}
+            >
+              {categories.map((category) => (
+                <option key={category.uuid} value={category.uuid}>
+                  {category.name}
+                </option>
+              ))}
+              <option value={NEW_CATEGORY_SENTINEL}>{t('prompts.createNewCategory')}</option>
+            </Select>
+          </Box>
+        </HStack>
+      </FormControl>
 
-        <FormControl>
-          <FormLabel>{t('prompts.textLabel')}</FormLabel>
+      <FormControl
+        flex="1"
+        display="flex"
+        flexDirection="column"
+        minHeight={0}
+      >
+        <FormLabel flexShrink={0}>{t('prompts.textLabel')}</FormLabel>
+        <Box flex="1" minHeight={0}>
           <CustomInput
             placeholder={t('prompts.textPlaceholder')}
             value={text}
             onChange={(e) => setText(e.target.value)}
             multiline
+            fillHeight
           />
-        </FormControl>
+        </Box>
+      </FormControl>
 
-        <FormControl>
-          <FormLabel>{t('prompts.categoryLabel')}</FormLabel>
-          <Select
-            placeholder={t('prompts.selectCategory')}
-            color="#667085"
-            value={selectedCategory}
-            onChange={(e) => {
-              if (e.target.value === NEW_CATEGORY_SENTINEL) {
-                nav(routes.addCategory);
-                return;
-              }
-              setSelectedCategory(e.target.value);
-            }}
-            style={{
-              borderRadius: '7px',
-              border: '0.5px solid var(--dark-quaternary, rgba(255, 255, 255, 0.10))',
-              background: 'rgba(255, 255, 255, 0.05)',
-            }}
-          >
-            {categories.map((category) => (
-              <option key={category.uuid} value={category.uuid}>
-                {category.name}
-              </option>
-            ))}
-            <option value={NEW_CATEGORY_SENTINEL}>{t('prompts.createNewCategory')}</option>
-          </Select>
-        </FormControl>
-
+      <Box flexShrink={0}>
         <CustomButton icon={<AddIcon />} onClick={handleEditPrompt}>
           {t('prompts.saveButton')}
         </CustomButton>
-      </VStack>
-    </Box>
+      </Box>
+    </Flex>
   );
 }
 

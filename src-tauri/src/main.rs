@@ -4,8 +4,8 @@ mod ns_panel;
 mod util;
 
 use tauri::{
-    CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
-    Window,
+    AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
+    SystemTrayMenuItem, Window,
 };
 
 #[allow(unused_imports)]
@@ -28,6 +28,30 @@ fn create_system_tray() -> SystemTray {
 }
 
 #[tauri::command]
+fn set_tray_labels(
+    app: AppHandle,
+    show: String,
+    hide: String,
+    dashboard: String,
+    quit: String,
+) -> Result<(), String> {
+    let tray = app.tray_handle();
+    tray.get_item("Show")
+        .set_title(show)
+        .map_err(|e| e.to_string())?;
+    tray.get_item("Hide")
+        .set_title(hide)
+        .map_err(|e| e.to_string())?;
+    tray.get_item("Dashboard")
+        .set_title(dashboard)
+        .map_err(|e| e.to_string())?;
+    tray.get_item("Quit")
+        .set_title(quit)
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
 fn apply_vibrancy_to_dashboard(window: Window) {
     // let window = app.get_window("main").unwrap();
     apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, None, Some(10.0))
@@ -43,7 +67,8 @@ fn main() {
             ns_panel::init_ns_panel,
             ns_panel::show_app,
             ns_panel::hide_app,
-            apply_vibrancy_to_dashboard
+            apply_vibrancy_to_dashboard,
+            set_tray_labels
         ])
         .setup(|app| {
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
