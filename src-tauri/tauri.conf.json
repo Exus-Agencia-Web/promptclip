@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "promptclip",
+    "productName": "PromptClip",
     "version": "1.0.8"
   },
   "tauri": {

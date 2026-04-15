@@ -30,7 +30,7 @@
     "selectCategory": "Selecciona una categoría",
     "createNewCategory": "+ Crear nueva categoría…",
     "addButton": "Añadir prompt",
-    "saveButton": "Guardar prompt",
+    "saveButton": "Guardar",
     "copied": "Prompt copiado al portapapeles",
     "addedTitle": "Prompt añadido.",
     "addedDesc": "Hemos añadido tu prompt.",
@@ -45,7 +45,7 @@
     "nameLabel": "Nombre de la categoría",
     "namePlaceholder": "Introduce el nombre de la categoría",
     "addButton": "Añadir categoría",
-    "saveButton": "Guardar cambios",
+    "saveButton": "Guardar",
     "deleteButton": "Eliminar categoría",
     "deleteConfirm": "¿Eliminar esta categoría? Los prompts que contiene se conservarán sin categoría.",
     "deletedTitle": "Categoría eliminada.",
@@ -99,9 +99,9 @@
     "newPrompt": "Nuevo prompt"
   },
   "tray": {
-    "show": "Mostrar",
-    "hide": "Ocultar",
-    "dashboard": "Panel",
+    "show": "Mostrar Buscador",
+    "hide": "Ocultar Buscador",
+    "dashboard": "Mostrar Panel",
     "quit": "Salir"
   }
 }

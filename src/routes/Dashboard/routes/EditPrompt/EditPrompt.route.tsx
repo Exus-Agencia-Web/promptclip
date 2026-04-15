@@ -160,11 +160,11 @@ function EditPrompt() {
         </Box>
       </FormControl>
 
-      <Box flexShrink={0}>
+      <Flex flexShrink={0} justify="flex-end">
         <CustomButton icon={<AddIcon />} onClick={handleEditPrompt}>
           {t('prompts.saveButton')}
         </CustomButton>
-      </Box>
+      </Flex>
     </Flex>
   );
 }

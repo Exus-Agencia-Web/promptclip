@@ -250,6 +250,10 @@ impl RawNSPanel {
                 sel!(canBecomeKeyWindow),
                 Self::can_become_key_window as extern "C" fn(&Object, Sel) -> BOOL,
             );
+            cls.add_method(
+                sel!(cancelOperation:),
+                Self::cancel_operation as extern "C" fn(&Object, Sel, id),
+            );
         }
 
         cls.register()
@@ -259,6 +263,11 @@ impl RawNSPanel {
     extern "C" fn can_become_key_window(_: &Object, _: Sel) -> BOOL {
         YES
     }
+
+    /// No-op override to prevent AppKit from playing the system beep when
+    /// Esc reaches the end of the responder chain. The panel is hidden from
+    /// JS via `appWindow.hide()`.
+    extern "C" fn cancel_operation(_: &Object, _: Sel, _sender: id) {}
 }
 unsafe impl Message for RawNSPanel {}
 

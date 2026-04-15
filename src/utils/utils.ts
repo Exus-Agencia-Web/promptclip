@@ -72,6 +72,8 @@ export const initialiseApp = async () => {
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
       appWindow.hide();
     }
   });

@@ -131,11 +131,11 @@ function AddPrompt() {
         </Box>
       </FormControl>
 
-      <Box flexShrink={0}>
+      <Flex flexShrink={0} justify="flex-end">
         <CustomButton icon={<AddIcon />} onClick={handleAddPrompt}>
           {t('prompts.addButton')}
         </CustomButton>
-      </Box>
+      </Flex>
     </Flex>
   );
 }
