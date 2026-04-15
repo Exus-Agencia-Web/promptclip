@@ -4,7 +4,7 @@
 
 ## ⬇️ Descargar
 
-**[Descargar PromptClip-1.0.12.dmg para macOS](https://github.com/Exus-Agencia-Web/promptclip/raw/refs/heads/main/PromptClip-1.0.12.dmg)**
+**[Descargar PromptClip-1.0.13.dmg para macOS](https://github.com/Exus-Agencia-Web/promptclip/raw/refs/heads/main/PromptClip-1.0.13.dmg)**
 
 > El enlace siempre apunta a la última versión publicada en la rama `main` del repositorio.
 

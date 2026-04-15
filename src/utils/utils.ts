@@ -4,7 +4,13 @@ import { listen } from '@tauri-apps/api/event';
 import { Store } from 'tauri-plugin-store-api';
 import { register, unregister } from '@tauri-apps/api/globalShortcut';
 import { createPromptsTable } from './database';
-import { createDashboardWindow, getDashboardWindow, getSearchWindow } from './window';
+import {
+  createDashboardWindow,
+  getDashboardWindow,
+  getSearchWindow,
+  showDashboardWindow,
+  isDashboardPolicyRegular,
+} from './window';
 import { IPrompt } from '../types/Prompt.types';
 import i18n, { SUPPORTED_LANGUAGES, SupportedLanguage } from '../i18n';
 
@@ -78,10 +84,9 @@ export const initialiseApp = async () => {
     }
   });
 
-  document.onkeyup = (event) => {
+  document.onkeyup = async (event) => {
     if (event.metaKey && event.key === 'n') {
-      getDashboardWindow()?.show();
-      getDashboardWindow()?.setFocus();
+      await showDashboardWindow();
       getDashboardWindow()?.emit('newPrompt');
     }
   };
@@ -91,10 +96,21 @@ export const initialiseApp = async () => {
   };
 
   await listen('showDashboard', async () => {
-    const dashboard = getDashboardWindow();
-    if (dashboard) {
-      await dashboard.show();
-      await dashboard.setFocus();
+    await showDashboardWindow();
+  });
+
+  await listen('reopenFromDock', async () => {
+    // Only react when we intentionally made the app a Regular app
+    // (dashboard was opened at least once). Otherwise startup activation
+    // would auto-open the dashboard.
+    if (!isDashboardPolicyRegular()) return;
+    const dash = getDashboardWindow();
+    if (!dash) return;
+    const visible = await dash.isVisible();
+    if (!visible) {
+      await showDashboardWindow();
+    } else {
+      await dash.setFocus();
     }
   });
 

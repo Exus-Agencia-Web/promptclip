@@ -21,6 +21,34 @@ export const setWindowSizeToBody = async () => {
   await appWindow.setSize(new LogicalSize(body.clientWidth, body.clientHeight));
 };
 
+let dashboardPolicyRegular = false;
+
+export const isDashboardPolicyRegular = (): boolean => dashboardPolicyRegular;
+
+export const setDashboardVisible = async (visible: boolean) => {
+  dashboardPolicyRegular = visible;
+  try {
+    await invoke('set_dashboard_visible', { visible });
+  } catch {
+    // ignore — macOS only
+  }
+};
+
+export const showDashboardWindow = async () => {
+  const dash = WebviewWindow.getByLabel('dashboard');
+  if (!dash) return;
+  await setDashboardVisible(true);
+  await dash.show();
+  await dash.setFocus();
+};
+
+export const hideDashboardWindow = async () => {
+  const dash = WebviewWindow.getByLabel('dashboard');
+  if (!dash) return;
+  await dash.hide();
+  await setDashboardVisible(false);
+};
+
 export const createDashboardWindow = async () => {
   const DashboardWindow = new WebviewWindow('dashboard', {
     url: '/dashboard',
@@ -37,9 +65,10 @@ export const createDashboardWindow = async () => {
   });
   DashboardWindow.setSize(new LogicalSize(1000, 722));
   DashboardWindow.center();
-  DashboardWindow.onCloseRequested((event) => {
+  DashboardWindow.onCloseRequested(async (event) => {
     event.preventDefault();
-    DashboardWindow.hide();
+    await DashboardWindow.hide();
+    await setDashboardVisible(false);
   });
 };
 
