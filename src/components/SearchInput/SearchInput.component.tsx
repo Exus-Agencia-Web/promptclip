@@ -40,6 +40,10 @@ function SearchInput() {
         background="transparent"
         color="white"
         _hover={{ bg: 'transparent' }}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
         onChange={(event) => onSearchInputChanged(event, setPrompts)}
       />
     </InputGroup>

@@ -29,6 +29,10 @@ const CustomInput: React.FC<InputProps> = ({
   return (
     <Textarea
       size={size}
+      autoComplete="off"
+      autoCorrect="off"
+      autoCapitalize="off"
+      spellCheck={false}
       {...rest}
       style={mergedContainerStyle}
       _placeholder={{ color: '#667085' }}
