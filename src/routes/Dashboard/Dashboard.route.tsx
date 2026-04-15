@@ -62,11 +62,14 @@ function Dashboard() {
         position: 'bottom-right',
         render: ({ onClose }) => (
           <Box
-            bg="var(--lighter-overlay-color)"
+            bg="#1B1A1D"
             borderRadius="10px"
             padding="16px"
             borderWidth="1px"
-            borderColor="rgba(255, 255, 255, 0.1)"
+            borderColor="rgba(255, 255, 255, 0.12)"
+            boxShadow="0 10px 30px rgba(0, 0, 0, 0.5)"
+            backdropFilter="blur(12px)"
+            minWidth="320px"
           >
             <Text fontWeight="bold" color="white" mb="1">
               {t('updateToast.title', { latest: latestVersion })}

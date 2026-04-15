@@ -1,6 +1,6 @@
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  --app-bg-color: rgba(0, 0, 0, 0.50);
+  --app-bg-color: rgba(10, 10, 12, 0.88);
   --search-bg-color: rgba(15, 15, 15, 0.93);
   --light-overlay-color: rgba(255, 255, 255, 0.1);
   --lighter-overlay-color: rgba(200, 200, 200, 0.04);

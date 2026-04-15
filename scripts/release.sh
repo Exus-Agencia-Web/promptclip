@@ -170,4 +170,27 @@ if [[ "$SIGN_MODE" != "unsigned" ]]; then
   fi
 fi
 
+
+# ---------------------------------------------------------------------------
+# Final step: commit everything and push.
+# Stages all changes (version bumps, README link, rebuilt DMG, etc.) under a
+# single "Release {version}" commit, then pushes to the current branch's
+# upstream. Runs only if this is a git repo.
+# ---------------------------------------------------------------------------
+if git -C "$ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  echo "release: committing and pushing Release $NEW"
+  git -C "$ROOT" add -A
+  if git -C "$ROOT" diff --cached --quiet; then
+    echo "release: nothing to commit"
+  else
+    git -C "$ROOT" commit -m "Release $NEW"
+  fi
+  BRANCH=$(git -C "$ROOT" rev-parse --abbrev-ref HEAD)
+  if git -C "$ROOT" rev-parse --abbrev-ref --symbolic-full-name "@{u}" >/dev/null 2>&1; then
+    git -C "$ROOT" push origin "$BRANCH"
+  else
+    git -C "$ROOT" push -u origin "$BRANCH"
+  fi
+fi
+
 echo "release: done ($SIGN_MODE)"
