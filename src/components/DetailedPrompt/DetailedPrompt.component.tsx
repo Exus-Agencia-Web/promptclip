@@ -10,10 +10,10 @@ import { deletePrompt, toggleFavorite } from '../../utils/database';
 import { UpdateContext } from '../../contexts/update.context';
 import { CategoriesContext } from '../../contexts/categories.context';
 import { routes } from '../../routes/Dashboard/routes/routes';
-import StarsIcon from '../Icons/StarsIcon.png';
 import { UsedForIcon } from '../Icons/UsedForIcon';
 import { HeartIcon } from '../Icons/HeartIcon';
 import { TrashIcon } from '../Icons/TrashIcon';
+import PromptIcon from '../IconPicker/PromptIcon.component';
 
 const DetailedPrompt: React.FC<IPrompt> = ({
   promptName,
@@ -22,6 +22,7 @@ const DetailedPrompt: React.FC<IPrompt> = ({
   isFavorite,
   uuid,
   category_id,
+  icon,
 }) => {
   const { t } = useTranslation();
   const { setUpdate } = useContext(UpdateContext);
@@ -80,13 +81,19 @@ const DetailedPrompt: React.FC<IPrompt> = ({
             flexDirection: 'row',
           }}
         >
-          <img
-            src={StarsIcon}
-            alt="Star icon"
+          <div
             style={{
-              width: '24px', height: '24px', marginRight: '12px',
+              width: '24px',
+              height: '24px',
+              marginRight: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
             }}
-          />
+          >
+            <PromptIcon name={icon} size={20} />
+          </div>
           <div
             style={{
               width: '506px',

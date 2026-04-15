@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import {
-  Box, FormControl, FormLabel, Text, VStack, useToast, Select,
+  Box, FormControl, FormLabel, Text, VStack, useToast, Select, HStack,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import CustomInput from '../../../../components/CustomInput/CustomInput.component';
 import { storePrompt, getCategories } from '../../../../utils/database';
 import CustomButton from '../../../../components/CustomButton/CustomButton.component';
+import IconPicker from '../../../../components/IconPicker/IconPicker.component';
 import { UpdateContext } from '../../../../contexts/update.context';
 import { ICategory } from '../../../../types/Prompt.types';
 import { routes } from '../routes';
@@ -18,6 +19,7 @@ function AddPrompt() {
   const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
+  const [icon, setIcon] = useState<string | null>(null);
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const { setUpdate } = useContext(UpdateContext);
@@ -44,7 +46,7 @@ function AddPrompt() {
       return;
     }
 
-    await storePrompt(title, text, selectedCategory || null);
+    await storePrompt(title, text, selectedCategory || null, icon);
     toast({
       title: t('prompts.addedTitle'),
       description: t('prompts.addedDesc'),
@@ -55,6 +57,7 @@ function AddPrompt() {
     setTitle('');
     setText('');
     setSelectedCategory('');
+    setIcon(null);
     setUpdate();
   };
 
@@ -67,12 +70,17 @@ function AddPrompt() {
 
         <FormControl>
           <FormLabel>{t('prompts.titleLabel')}</FormLabel>
-          <CustomInput
-            placeholder={t('prompts.titlePlaceholder')}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            autoFocus
-          />
+          <HStack align="center" spacing={2}>
+            <IconPicker value={icon} onChange={setIcon} />
+            <Box flex="1">
+              <CustomInput
+                placeholder={t('prompts.titlePlaceholder')}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                autoFocus
+              />
+            </Box>
+          </HStack>
         </FormControl>
 
         <FormControl>

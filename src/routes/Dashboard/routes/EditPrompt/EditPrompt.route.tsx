@@ -8,12 +8,14 @@ import {
   VStack,
   useToast,
   Select,
+  HStack,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useTranslation } from 'react-i18next';
 import CustomInput from '../../../../components/CustomInput/CustomInput.component';
 import { updatePrompt, getCategories, getPromptByUUID } from '../../../../utils/database';
 import CustomButton from '../../../../components/CustomButton/CustomButton.component';
+import IconPicker from '../../../../components/IconPicker/IconPicker.component';
 import { UpdateContext } from '../../../../contexts/update.context';
 import { IPrompt, ICategory } from '../../../../types/Prompt.types';
 import { routes } from '../routes';
@@ -24,6 +26,7 @@ function EditPrompt() {
   const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
+  const [icon, setIcon] = useState<string | null>(null);
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const { setUpdate } = useContext(UpdateContext);
@@ -41,6 +44,7 @@ function EditPrompt() {
         setTitle(prompt.promptName);
         setText(prompt.prompt);
         setSelectedCategory(prompt.category_id || '');
+        setIcon(prompt.icon ?? null);
       }
     };
 
@@ -73,6 +77,7 @@ function EditPrompt() {
       used: 0, // Set the appropriate used value
       isFavorite: false, // Set the appropriate isFavorite value
       category_id: selectedCategory || null,
+      icon,
     };
 
     await updatePrompt(updatedPrompt);
@@ -95,11 +100,16 @@ function EditPrompt() {
 
         <FormControl>
           <FormLabel>{t('prompts.titleLabel')}</FormLabel>
-          <CustomInput
-            placeholder={t('prompts.titlePlaceholder')}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+          <HStack align="center" spacing={2}>
+            <IconPicker value={icon} onChange={setIcon} />
+            <Box flex="1">
+              <CustomInput
+                placeholder={t('prompts.titlePlaceholder')}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </Box>
+          </HStack>
         </FormControl>
 
         <FormControl>

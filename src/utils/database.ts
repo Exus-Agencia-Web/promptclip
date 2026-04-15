@@ -23,6 +23,7 @@ export const createPromptsTable = async () => {
       used INTEGER DEFAULT 0,
       isFavorite INTEGER DEFAULT 0,
       category_id TEXT,
+      icon TEXT,
       FOREIGN KEY (category_id) REFERENCES categories (uuid)
     );
 
@@ -33,6 +34,12 @@ export const createPromptsTable = async () => {
     )
   `;
   await db.execute(createTableQuery);
+
+  try {
+    await db.execute('ALTER TABLE prompts ADD COLUMN icon TEXT');
+  } catch {
+    // column already exists — ignore
+  }
 };
 
 const updateCategoryPromptsCount = async (categoryId: string) => {
@@ -70,13 +77,14 @@ export const storePrompt = async (
   promptName: string,
   prompt: string,
   categoryId: string | null,
+  icon: string | null,
 ) => {
   const db = await getDb();
   const uuid = uuidv4();
   await db.execute(
-    `INSERT INTO prompts (uuid, promptName, prompt, category_id)
-     VALUES ($1, $2, $3, $4)`,
-    [uuid, promptName, prompt, categoryId],
+    `INSERT INTO prompts (uuid, promptName, prompt, category_id, icon)
+     VALUES ($1, $2, $3, $4, $5)`,
+    [uuid, promptName, prompt, categoryId, icon],
   );
 
   if (categoryId) {
@@ -94,9 +102,9 @@ export const updatePrompt = async (prompt: IPrompt) => {
 
   await db.execute(
     `UPDATE prompts
-     SET promptName = $1, prompt = $2, category_id = $3
-     WHERE uuid = $4`,
-    [prompt.promptName, prompt.prompt, prompt.category_id, prompt.uuid],
+     SET promptName = $1, prompt = $2, category_id = $3, icon = $4
+     WHERE uuid = $5`,
+    [prompt.promptName, prompt.prompt, prompt.category_id, prompt.icon, prompt.uuid],
   );
 
   await updateAffectedCategoryPromptsCounts(
@@ -212,6 +220,7 @@ export const getPromptByUUID = async (uuid: string): Promise<IPrompt | null> => 
       used: prompt.used,
       isFavorite: prompt.isFavorite,
       category_id: prompt.category_id,
+      icon: prompt.icon ?? null,
     };
   }
 

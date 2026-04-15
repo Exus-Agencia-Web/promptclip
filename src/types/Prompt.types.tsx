@@ -7,6 +7,7 @@ export interface IPrompt {
   used: number;
   isFavorite: boolean;
   category_id: string | null;
+  icon: string | null;
 }
 
 export interface ICategory {
