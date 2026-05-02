@@ -55,6 +55,20 @@ fn set_tray_labels(
     Ok(())
 }
 
+/// Centers the window with the given label on the monitor that currently
+/// holds the cursor. Used to bring the dashboard back to a sane position
+/// whenever it reopens, even after the user moved between displays while
+/// it was hidden.
+#[tauri::command]
+fn center_window_on_cursor_monitor(app: AppHandle, label: String) -> Result<(), String> {
+    if let Some(window) = app.get_window(&label) {
+        #[cfg(target_os = "macos")]
+        ns_panel::position_window_at_the_center_of_the_monitor_with_cursor(&window);
+        let _ = window;
+    }
+    Ok(())
+}
+
 #[tauri::command]
 fn apply_vibrancy_to_dashboard(window: Window) {
     // let window = app.get_window("main").unwrap();
@@ -146,6 +160,7 @@ fn main() {
             ns_panel::show_app,
             ns_panel::hide_app,
             apply_vibrancy_to_dashboard,
+            center_window_on_cursor_monitor,
             set_tray_labels,
             set_dashboard_visible
         ])

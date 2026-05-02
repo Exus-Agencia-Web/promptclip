@@ -153,7 +153,7 @@ pub fn hide_app(app_handle: AppHandle<Wry>) {
 }
 
 /// Positions a given window at the center of the monitor with cursor
-fn position_window_at_the_center_of_the_monitor_with_cursor(window: &Window<Wry>) {
+pub(crate) fn position_window_at_the_center_of_the_monitor_with_cursor(window: &Window<Wry>) {
     if let Some(monitor) = get_monitor_with_cursor() {
         let display_size = monitor.size.to_logical::<f64>(monitor.scale_factor);
         let display_pos = monitor.position.to_logical::<f64>(monitor.scale_factor);

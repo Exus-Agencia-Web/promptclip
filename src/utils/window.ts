@@ -34,11 +34,22 @@ export const setDashboardVisible = async (visible: boolean) => {
   }
 };
 
+const centerDashboardOnCursorMonitor = async () => {
+  try {
+    await invoke('center_window_on_cursor_monitor', { label: 'dashboard' });
+  } catch {
+    // non-macOS or command unavailable — fall back to primary monitor center
+    const dash = WebviewWindow.getByLabel('dashboard');
+    if (dash) await dash.center();
+  }
+};
+
 export const showDashboardWindow = async () => {
   const dash = WebviewWindow.getByLabel('dashboard');
   if (!dash) return;
   await setDashboardVisible(true);
   await dash.show();
+  await centerDashboardOnCursorMonitor();
   await dash.setFocus();
 };
 
