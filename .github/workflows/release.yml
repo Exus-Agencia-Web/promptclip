@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ github.ref_name == 'master' && 'production' || (github.ref_name == 'prerelease' && 'prerelease' || 'develop') }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install rsync
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y rsync
+
+      - name: Run release
+        env:
+          AWS1_SSH_KEY: ${{ secrets.AWS1_SSH_KEY }}
+          GH_BEFORE: ${{ github.event.before }}
+          USE_GH_BEFORE: ${{ secrets.USE_GH_BEFORE }}
+          COMMITSDEPTH: ${{ secrets.COMMITSDEPTH }}
+        run: |
+          case "${GITHUB_REF_NAME}" in
+            develop)    TARGET=develop ;;
+            master)     TARGET=production ;;
+            *)
+              echo "Rama ${GITHUB_REF_NAME} no mapea a ningún ambiente" >&2
+              exit 1
+              ;;
+          esac
+          bash scripts/release.sh "$TARGET"
